@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Request — Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue: #4f8cff;
+            --blue-dk: #2f5fd0;
+            --blue-soft: #eef4ff;
+            --sidebar-w: 248px;
+            --header-h: 64px;
+            --radius: 14px;
+            --text: #1a1d23;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --card: #fff;
+            --bg: #f5f7fb
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: white;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100
+        }
+
+        .sidebar-logo {
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .logo-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: white
+        }
+
+        .sidebar-logo span {
+            font-size: 14px;
+            font-weight: 600
+        }
+
+        .sidebar-admin {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fef3c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 8px
+        }
+
+        .sidebar-admin p {
+            font-size: 13px;
+            font-weight: 600
+        }
+
+        .sidebar-admin span {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        nav {
+            padding: 12px;
+            flex: 1
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .8px;
+            color: var(--muted);
+            text-transform: uppercase;
+            padding: 8px 8px 4px
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
+            transition: .15s;
+            margin-bottom: 2px
+        }
+
+        .nav-item:hover {
+            background: var(--blue-soft);
+            color: var(--blue-dk)
+        }
+
+        .nav-item.active {
+            background: var(--blue-soft);
+            color: var(--blue);
+            font-weight: 600
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0
+        }
+
+        .sidebar-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border)
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: #e53935;
+            font-size: 13px;
+            font-weight: 500;
+            width: 100%;
+            transition: .15s
+        }
+
+        .logout-btn:hover {
+            background: #fff5f5
+        }
+
+        .notif-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 20px;
+            margin-left: 6px
+        }
+
+        /* MAIN */
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column
+        }
+
+        .topbar {
+            height: var(--header-h);
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 50
+        }
+
+        .topbar-left h2 {
+            font-size: 16px;
+            font-weight: 600
+        }
+
+        .topbar-left p {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .date-chip {
+            background: var(--blue-soft);
+            color: var(--blue-dk);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500
+        }
+
+        .content {
+            padding: 24px 28px
+        }
+
+        /* ALERT */
+        .alert-success {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        /* STATS ROW */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 18px;
+        }
+
+        .stat-icon {
+            font-size: 22px;
+            margin-bottom: 8px
+        }
+
+        .stat-num {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 2px
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        /* TABS */
+        .tab-row {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 18px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 4px;
+            width: fit-content
+        }
+
+        .tab-btn {
+            padding: 7px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--muted);
+            transition: .15s
+        }
+
+        .tab-btn:hover {
+            background: white;
+            color: var(--text)
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--blue);
+            font-weight: 600;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .08)
+        }
+
+        /* CARD */
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 18px;
+            overflow: hidden
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600
+        }
+
+        .card-sub {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px
+        }
+
+        .table-wrap {
+            overflow-x: auto
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        thead tr {
+            background: var(--bg)
+        }
+
+        th {
+            padding: 11px 16px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        td {
+            padding: 13px 16px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+            vertical-align: top
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none
+        }
+
+        tbody tr:hover {
+            background: #fafbfd
+        }
+
+        /* BADGES */
+        .badge-menunggu {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .badge-dibuka {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .badge-diproses {
+            background: #f3e8ff;
+            color: #7e22ce;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .badge-selesai {
+            background: #dcfce7;
+            color: #166534;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .badge-akun {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .badge-password {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        /* TIKET CODE */
+        .tiket-code {
+            font-family: monospace;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--blue-dk);
+            letter-spacing: .5px
+        }
+
+        /* ACTION DROPDOWN */
+        .aksi-wrap {
+            position: relative;
+            display: inline-block
+        }
+
+        .btn-aksi {
+            padding: 6px 12px;
+            background: var(--blue-soft);
+            color: var(--blue-dk);
+            border: 1px solid #c7dcff;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-aksi:hover {
+            background: #d6eaff
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 4px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .1);
+            z-index: 999;
+            min-width: 180px;
+            overflow: hidden;
+        }
+
+        .dropdown-menu.open {
+            display: block
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 9px 14px;
+            font-size: 13px;
+            color: var(--text);
+            text-decoration: none;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-family: inherit;
+            transition: .1s;
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg)
+        }
+
+        .dropdown-item.danger {
+            color: #e53935
+        }
+
+        .dropdown-item.danger:hover {
+            background: #fff5f5
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 4px 0
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .4);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.open {
+            display: flex
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, .15);
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px
+        }
+
+        .modal-sub {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 20px
+        }
+
+        .modal-info {
+            background: var(--bg);
+            border-radius: 9px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+
+        .modal-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .modal-info-row:last-child {
+            margin-bottom: 0
+        }
+
+        .modal-info-row span:first-child {
+            color: var(--muted);
+            font-size: 12px
+        }
+
+        .modal-info-row span:last-child {
+            font-weight: 500
+        }
+
+        .modal-form label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            margin-bottom: 5px;
+        }
+
+        .modal-form select,
+        .modal-form textarea {
+            width: 100%;
+            padding: 10px 13px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--text);
+            outline: none;
+            transition: .15s;
+            margin-bottom: 12px;
+        }
+
+        .modal-form select:focus,
+        .modal-form textarea:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(79, 140, 255, .1);
+        }
+
+        .modal-form textarea {
+            resize: vertical;
+            min-height: 80px
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 4px
+        }
+
+        .btn-cancel {
+            padding: 9px 18px;
+            background: var(--bg);
+            color: var(--muted);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .btn-simpan {
+            padding: 9px 18px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .btn-simpan:hover {
+            background: var(--blue-dk)
+        }
+
+        .empty-row td {
+            text-align: center;
+            color: var(--muted);
+            padding: 32px
+        }
+
+        .pesan-text {
+            font-size: 12px;
+            color: var(--muted);
+            font-style: italic;
+            max-width: 200px
+        }
+
+        .catatan-box-sm {
+            margin-top: 6px;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 6px;
+            padding: 5px 8px;
+            font-size: 11px;
+            color: #0369a1;
+            font-style: italic;
+            max-width: 200px;
+        }
+
+        @media(max-width: 768px) {
+            .sidebar {
+                display: none
+            }
+
+            .main {
+                margin-left: 0
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+                </svg>
+            </div>
+            <span>SistemGaji</span>
+        </div>
+        <div class="sidebar-admin">
+            <div class="admin-avatar">AD</div>
+            <p>Administrator</p><span>Admin Sistem</span>
+        </div>
+        <nav>
+            <div class="nav-label">Menu</div>
+            <a href="/admin/dashboard" class="nav-item"><span class="nav-icon">📊</span>Dashboard</a>
+            <a href="/admin/absensi" class="nav-item"><span class="nav-icon">📅</span>Kelola Absensi</a>
+            <a href="/admin/izin" class="nav-item">
+                <span class="nav-icon">📋</span>Kelola Izin
+                {% if pending_izin > 0 %}<span class="notif-badge">{{ pending_izin }}</span>{% endif %}
+            </a>
+            <a href="/admin/pembayaran" class="nav-item"><span class="nav-icon">💳</span>Pembayaran Gaji</a>
+            <a href="/admin/jabatan" class="nav-item"><span class="nav-icon">🏢</span>Kelola Jabatan</a>
+            <a href="/admin/request" class="nav-item active">
+                <span class="nav-icon">📩</span>Request Akun
+                {% if menunggu_count > 0 %}<span class="notif-badge">{{ menunggu_count }}</span>{% endif %}
+            </a>
+        </nav>
+        <div class="sidebar-footer"><a href="/logout" class="logout-btn"><span>🚪</span> Keluar</a></div>
+    </aside>
+
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <h2>Request Akun</h2>
+                <p>Kelola permintaan pembuatan akun dan reset password dari karyawan</p>
+            </div>
+            <span class="date-chip">{{ tanggal_str }}</span>
+        </div>
+
+        <div class="content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}{% for cat, msg in messages %}
+            <div class="alert-success">✅ {{ msg }}</div>
+            {% endfor %}{% endif %}
+            {% endwith %}
+
+            <!-- STATS -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-num">{{ stats.menunggu }}</div>
+                    <div class="stat-label">Menunggu</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👁</div>
+                    <div class="stat-num">{{ stats.dibuka }}</div>
+                    <div class="stat-label">Dibuka</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚙️</div>
+                    <div class="stat-num">{{ stats.diproses }}</div>
+                    <div class="stat-label">Diproses</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-num">{{ stats.selesai }}</div>
+                    <div class="stat-label">Selesai</div>
+                </div>
+            </div>
+
+            <!-- TABS -->
+            <div class="tab-row">
+                <a href="?status=menunggu" class="tab-btn {% if status_filter=='menunggu' %}active{% endif %}">
+                    Menunggu{% if stats.menunggu > 0 %} ({{ stats.menunggu }}){% endif %}
+                </a>
+                <a href="?status=dibuka" class="tab-btn {% if status_filter=='dibuka'   %}active{% endif %}">Dibuka</a>
+                <a href="?status=diproses"
+                    class="tab-btn {% if status_filter=='diproses' %}active{% endif %}">Diproses</a>
+                <a href="?status=selesai"
+                    class="tab-btn {% if status_filter=='selesai'  %}active{% endif %}">Selesai</a>
+                <a href="?status=semua" class="tab-btn {% if status_filter=='semua'    %}active{% endif %}">Semua</a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">
+                            {% if status_filter == 'menunggu' %}Menunggu Diproses
+                            {% elif status_filter == 'dibuka' %}Sudah Dibuka
+                            {% elif status_filter == 'diproses' %}Sedang Diproses
+                            {% elif status_filter == 'selesai' %}Selesai
+                            {% else %}Semua Request
+                            {% endif %}
+                        </div>
+                        <div class="card-sub">{{ request_list|length }} permintaan ditemukan</div>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kode Tiket</th>
+                                <th>Nama & Jabatan</th>
+                                <th>Jenis</th>
+                                <th>Pesan</th>
+                                <th>Dikirim</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if request_list %}
+                            {% for r in request_list %}
+                            <tr>
+                                <td><span class="tiket-code">{{ r.kode_tiket }}</span></td>
+                                <td>
+                                    <div style="font-weight:500">{{ r.nama }}</div>
+                                    <div style="font-size:11px;color:var(--muted)">{{ r.jabatan }}</div>
+                                    {% if r.username_akun %}
+                                    <div style="font-size:11px;color:var(--blue-dk);margin-top:2px">👤 {{
+                                        r.username_akun }}</div>
+                                    {% endif %}
+                                    {% if r.nama_bank %}
+                                    <div
+                                        style="font-size:11px;color:var(--muted);margin-top:4px;border-top:1px solid var(--border);padding-top:4px">
+                                        🏦 {{ r.nama_bank }} — {{ r.no_rekening }}<br>
+                                        <span style="font-style:italic">a.n. {{ r.atas_nama_rekening }}</span>
+                                    </div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if r.jenis_request == 'belum_akun' %}
+                                    <span class="badge-akun">👤 Buat Akun</span>
+                                    {% else %}
+                                    <span class="badge-password">🔑 Reset PW</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if r.pesan_tambahan %}
+                                    <div class="pesan-text">{{ r.pesan_tambahan }}</div>
+                                    {% else %}
+                                    <span style="font-size:11px;color:var(--muted);font-style:italic">—</span>
+                                    {% endif %}
+                                    {% if r.catatan_admin %}
+                                    <div class="catatan-box-sm">💬 {{ r.catatan_admin }}</div>
+                                    {% endif %}
+                                </td>
+                                <td style="color:var(--muted);font-size:12px">
+                                    {{ r.created_at.strftime('%d %b %Y') if r.created_at else '—' }}<br>
+                                    <span style="font-size:11px">{{ r.created_at.strftime('%H:%M') if r.created_at else
+                                        '' }}</span>
+                                </td>
+                                <td>
+                                    {% if r.status_request == 'menunggu' %}<span class="badge-menunggu">⏳
+                                        Menunggu</span>
+                                    {% elif r.status_request == 'dibuka' %}<span class="badge-dibuka">👁 Dibuka</span>
+                                    {% elif r.status_request == 'diproses' %}<span class="badge-diproses">⚙️
+                                        Diproses</span>
+                                    {% else %}<span class="badge-selesai">✅ Selesai</span>{% endif %}
+                                </td>
+                                <td>
+                                    <div class="aksi-wrap">
+                                        <button class="btn-aksi" onclick="toggleDropdown(this)">
+                                            Kelola ▾
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            {% if r.status_request == 'menunggu' %}
+                                            <button class="dropdown-item"
+                                                onclick="openModal({{ r.id_request }}, '{{ r.nama }}', '{{ r.jabatan }}', '{{ r.jenis_request }}', '{{ r.kode_tiket }}', 'dibuka')">👁
+                                                Tandai Dibuka</button>
+                                            {% endif %}
+                                            {% if r.status_request in ['menunggu','dibuka'] %}
+                                            <button class="dropdown-item"
+                                                onclick="openModal({{ r.id_request }}, '{{ r.nama }}', '{{ r.jabatan }}', '{{ r.jenis_request }}', '{{ r.kode_tiket }}', 'diproses')">⚙️
+                                                Tandai Diproses</button>
+                                            {% endif %}
+                                            {% if r.status_request != 'selesai' %}
+                                            <button class="dropdown-item"
+                                                onclick="openModal({{ r.id_request }}, '{{ r.nama }}', '{{ r.jabatan }}', '{{ r.jenis_request }}', '{{ r.kode_tiket }}', 'selesai')">✅
+                                                Tandai Selesai</button>
+                                            {% endif %}
+                                            <div class="dropdown-divider"></div>
+                                            <button class="dropdown-item"
+                                                onclick="openModal({{ r.id_request }}, '{{ r.nama }}', '{{ r.jabatan }}', '{{ r.jenis_request }}', '{{ r.kode_tiket }}', 'update')">✏️
+                                                Update & Catatan</button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr class="empty-row">
+                                <td colspan="7">Tidak ada permintaan</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL UPDATE STATUS -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+        <div class="modal-box">
+            <div class="modal-title" id="modalTitle">Update Status</div>
+            <div class="modal-sub" id="modalSub">Ubah status permintaan ini</div>
+
+            <div class="modal-info">
+                <div class="modal-info-row">
+                    <span>Nama</span>
+                    <span id="infoNama">—</span>
+                </div>
+                <div class="modal-info-row">
+                    <span>Jabatan</span>
+                    <span id="infoJabatan">—</span>
+                </div>
+                <div class="modal-info-row">
+                    <span>Jenis</span>
+                    <span id="infoJenis">—</span>
+                </div>
+                <div class="modal-info-row">
+                    <span>Kode Tiket</span>
+                    <span id="infoTiket" style="font-family:monospace;font-weight:700;color:var(--blue-dk)">—</span>
+                </div>
+            </div>
+
+            <form method="POST" action="/admin/request/update" class="modal-form">
+                <input type="hidden" name="id_request" id="formIdRequest">
+                <input type="hidden" name="redirect_status" id="formRedirect" value="menunggu">
+
+                <label>Status Baru</label>
+                <select name="status_request" id="formStatus">
+                    <option value="menunggu">⏳ Menunggu</option>
+                    <option value="dibuka">👁 Dibuka</option>
+                    <option value="diproses">⚙️ Diproses</option>
+                    <option value="selesai">✅ Selesai</option>
+                </select>
+
+                <label>Catatan untuk Pemohon (opsional)</label>
+                <textarea name="catatan_admin" id="formCatatan"
+                    placeholder="Contoh: Akun sudah dibuat, username: joko123 | Password sudah direset, silakan login kembali"></textarea>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Batal</button>
+                    <button type="submit" class="btn-simpan">💾 Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Dropdown
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.aksi-wrap')) {
+                document.querySelectorAll('.dropdown-menu.open').forEach(m => m.classList.remove('open'));
+            }
+        });
+
+        function toggleDropdown(btn) {
+            const menu = btn.nextElementSibling;
+            document.querySelectorAll('.dropdown-menu.open').forEach(m => {
+                if (m !== menu) m.classList.remove('open');
+            });
+            menu.classList.toggle('open');
+        }
+
+        // Modal
+        function openModal(id, nama, jabatan, jenis, tiket, targetStatus) {
+            document.querySelectorAll('.dropdown-menu.open').forEach(m => m.classList.remove('open'));
+
+            document.getElementById('formIdRequest').value = id;
+            document.getElementById('infoNama').textContent = nama;
+            document.getElementById('infoJabatan').textContent = jabatan;
+            document.getElementById('infoJenis').textContent = jenis === 'belum_akun' ? '👤 Buat Akun' : '🔑 Reset Password';
+            document.getElementById('infoTiket').textContent = tiket;
+
+            const statusSelect = document.getElementById('formStatus');
+            if (targetStatus === 'update') {
+                document.getElementById('modalTitle').textContent = 'Update Catatan';
+                document.getElementById('modalSub').textContent = 'Tambahkan catatan untuk pemohon';
+            } else {
+                statusSelect.value = targetStatus;
+                const labels = { dibuka: '👁 Tandai Dibuka', diproses: '⚙️ Tandai Diproses', selesai: '✅ Tandai Selesai' };
+                document.getElementById('modalTitle').textContent = labels[targetStatus] || 'Update Status';
+                document.getElementById('modalSub').textContent = 'Kamu bisa tambahkan catatan untuk pemohon';
+            }
+
+            const currentParam = new URLSearchParams(window.location.search).get('status') || 'menunggu';
+            document.getElementById('formRedirect').value = currentParam;
+
+            document.getElementById('modalOverlay').classList.add('open');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('open');
+            document.getElementById('formCatatan').value = '';
+        }
+
+        function closeModalOutside(e) {
+            if (e.target === document.getElementById('modalOverlay')) closeModal();
+        }
+    </script>
+</body>
+
+</html>

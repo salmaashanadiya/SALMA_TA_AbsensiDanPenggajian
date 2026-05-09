@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfirmasi Tolak Izin Khusus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue: #4f8cff;
+            --blue-dk: #2f5fd0;
+            --blue-soft: #eef4ff;
+            --sidebar-w: 248px;
+            --header-h: 64px;
+            --radius: 14px;
+            --text: #1a1d23;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --card: #fff;
+            --bg: #f5f7fb;
+            --orange: #f97316;
+            --orange-soft: #fff7ed;
+            --orange-dk: #c2410c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: white;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100
+        }
+
+        .sidebar-logo {
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .logo-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: white
+        }
+
+        .sidebar-logo span {
+            font-size: 14px;
+            font-weight: 600
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fef3c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 8px
+        }
+
+        .sidebar-admin {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .sidebar-admin p {
+            font-size: 13px;
+            font-weight: 600
+        }
+
+        .sidebar-admin span {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        nav {
+            padding: 12px;
+            flex: 1
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .8px;
+            color: var(--muted);
+            text-transform: uppercase;
+            padding: 8px 8px 4px
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
+            transition: .15s;
+            margin-bottom: 2px
+        }
+
+        .nav-item:hover {
+            background: var(--blue-soft);
+            color: var(--blue-dk)
+        }
+
+        .nav-item.active {
+            background: var(--orange-soft);
+            color: var(--orange-dk);
+            font-weight: 600
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0
+        }
+
+        .sidebar-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border)
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: #e53935;
+            font-size: 13px;
+            font-weight: 500;
+            width: 100%;
+            transition: .15s
+        }
+
+        .logout-btn:hover {
+            background: #fff5f5
+        }
+
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column
+        }
+
+        .topbar {
+            height: var(--header-h);
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 28px;
+            gap: 10px
+        }
+
+        .topbar a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 13px
+        }
+
+        .topbar a:hover {
+            color: var(--blue)
+        }
+
+        .topbar-sep {
+            color: var(--border)
+        }
+
+        .topbar-current {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .content {
+            padding: 32px 28px;
+            max-width: 680px
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 6px
+        }
+
+        .page-sub {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 24px
+        }
+
+        .info-card {
+            background: var(--orange-soft);
+            border: 2px solid var(--orange);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 24px
+        }
+
+        .info-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: flex-start
+        }
+
+        .info-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            min-width: 110px;
+            padding-top: 2px
+        }
+
+        .info-val {
+            font-size: 13px;
+            color: var(--text);
+            line-height: 1.5
+        }
+
+        .alasan-khusus-box {
+            background: white;
+            border: 1.5px solid var(--orange);
+            border-radius: 9px;
+            padding: 12px 14px;
+            font-size: 13px;
+            color: var(--orange-dk);
+            line-height: 1.6;
+            margin-top: 4px
+        }
+
+        .form-group {
+            margin-bottom: 16px
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            margin-bottom: 8px
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 9px;
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--text);
+            outline: none;
+            transition: .15s;
+            background: white;
+            resize: vertical;
+            min-height: 110px
+        }
+
+        .form-group textarea:focus {
+            border-color: #ef4444
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px
+        }
+
+        .btn-cancel {
+            padding: 10px 20px;
+            background: var(--bg);
+            color: var(--muted);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center
+        }
+
+        .btn-cancel:hover {
+            background: var(--border)
+        }
+
+        .btn-danger {
+            padding: 10px 20px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit
+        }
+
+        .btn-danger:hover {
+            background: #dc2626
+        }
+
+        .badge-sakit {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .badge-izin {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon"><svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+                </svg></div>
+            <span>SistemGaji</span>
+        </div>
+        <div class="sidebar-admin">
+            <div class="admin-avatar">AD</div>
+            <p>Administrator</p><span>Admin Sistem</span>
+        </div>
+        <nav>
+            <div class="nav-label">Menu</div>
+            <a href="/admin/dashboard" class="nav-item"><span class="nav-icon">📊</span>Dashboard</a>
+            <a href="/admin/absensi" class="nav-item"><span class="nav-icon">📅</span>Kelola Absensi</a>
+            <a href="/admin/izin" class="nav-item"><span class="nav-icon">📋</span>Kelola Izin</a>
+            <a href="/admin/izin_khusus" class="nav-item active"><span class="nav-icon">🔥</span>Izin Khusus</a>
+            <a href="/admin/pembayaran" class="nav-item"><span class="nav-icon">💳</span>Pembayaran Gaji</a>
+            <a href="/admin/jabatan" class="nav-item"><span class="nav-icon">🏢</span>Kelola Jabatan</a>
+        </nav>
+        <div class="sidebar-footer"><a href="/logout" class="logout-btn"><span>🚪</span> Keluar</a></div>
+    </aside>
+
+    <div class="main">
+        <div class="topbar">
+            <a href="/admin/izin_khusus">Izin Khusus</a>
+            <span class="topbar-sep">/</span>
+            <span class="topbar-current">Konfirmasi Penolakan</span>
+        </div>
+        <div class="content">
+            <div class="page-title">❌ Tolak Pengajuan Khusus</div>
+            <div class="page-sub">Isi alasan penolakan agar karyawan memahami keputusan admin</div>
+
+            {% if error %}
+            <div class="alert-error"><span>⚠️</span><span>{{ error }}</span></div>
+            {% endif %}
+
+            <div class="info-card">
+                <div class="info-row">
+                    <span class="info-label">Karyawan</span>
+                    <span class="info-val"><strong>{{ khusus.nama_salma }}</strong> — {{ khusus.nama_jabatan_salma
+                        }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Jenis</span>
+                    <span class="info-val">
+                        {% if khusus.jenis_izin_salma == 'sakit' %}
+                        <span class="badge-sakit">Sakit</span>
+                        {% else %}
+                        <span class="badge-izin">Izin Mendadak</span>
+                        {% endif %}
+                        &nbsp;<span
+                            style="font-size:11px;background:#fff7ed;color:#c2410c;padding:2px 8px;border-radius:20px;border:1px solid #fed7aa;font-weight:700">⚡
+                            Khusus</span>
+                    </span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Periode</span>
+                    <span class="info-val">{{ khusus.tanggal_mulai_salma }} s/d {{ khusus.tanggal_selesai_salma
+                        }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Alasan Umum</span>
+                    <span class="info-val">{{ khusus.alasan_izin_salma or '—' }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Alasan Darurat</span>
+                    <div>
+                        <div class="alasan-khusus-box">{{ khusus.alasan_khusus_salma or '—' }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <form method="POST">
+                <div class="form-group">
+                    <label>Alasan Penolakan <span style="color:#ef4444">*</span></label>
+                    <textarea name="alasan_tolak"
+                        placeholder="Jelaskan alasan penolakan pengajuan khusus ini kepada karyawan..."
+                        required>{{ request.form.get('alasan_tolak', '') }}</textarea>
+                </div>
+                <div class="btn-row">
+                    <a href="/admin/izin_khusus" class="btn-cancel">← Batal</a>
+                    <button type="submit" class="btn-danger">❌ Tolak Pengajuan Khusus</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Bonus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue: #4f8cff;
+            --blue-dk: #2f5fd0;
+            --blue-soft: #eef4ff;
+            --green: #22c55e;
+            --green-soft: #dcfce7;
+            --green-dk: #166534;
+            --red: #ef4444;
+            --red-soft: #fee2e2;
+            --red-dk: #991b1b;
+            --amber: #d97706;
+            --amber-soft: #fef3c7;
+            --amber-dk: #92400e;
+            --sidebar-w: 248px;
+            --header-h: 64px;
+            --radius: 14px;
+            --text: #1a1d23;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --card: #fff;
+            --bg: #f5f7fb
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: white;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100
+        }
+
+        .sidebar-logo {
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .logo-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: white
+        }
+
+        .sidebar-logo span {
+            font-size: 14px;
+            font-weight: 600
+        }
+
+        .sidebar-admin {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fef3c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 8px
+        }
+
+        .sidebar-admin p {
+            font-size: 13px;
+            font-weight: 600
+        }
+
+        .sidebar-admin span {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        nav {
+            padding: 12px;
+            flex: 1
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .8px;
+            color: var(--muted);
+            text-transform: uppercase;
+            padding: 8px 8px 4px
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
+            transition: .15s;
+            margin-bottom: 2px
+        }
+
+        .nav-item:hover {
+            background: var(--blue-soft);
+            color: var(--blue-dk)
+        }
+
+        .nav-item.active {
+            background: var(--blue-soft);
+            color: var(--blue);
+            font-weight: 600
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0
+        }
+
+        .sidebar-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border)
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: #e53935;
+            font-size: 13px;
+            font-weight: 500;
+            width: 100%;
+            transition: .15s
+        }
+
+        .logout-btn:hover {
+            background: #fff5f5
+        }
+
+        /* MAIN */
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column
+        }
+
+        .topbar {
+            height: var(--header-h);
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 50
+        }
+
+        .topbar-left h2 {
+            font-size: 16px;
+            font-weight: 600
+        }
+
+        .topbar-left p {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .date-chip {
+            background: var(--blue-soft);
+            color: var(--blue-dk);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500
+        }
+
+        .content {
+            padding: 24px 28px;
+            max-width: 900px;
+        }
+
+        /* CARD */
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+            overflow: hidden
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .card-header-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0
+        }
+
+        .card-header-icon.green {
+            background: var(--green-soft)
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600
+        }
+
+        .card-sub {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 1px
+        }
+
+        .card-body {
+            padding: 18px 20px
+        }
+
+        /* FORM */
+        .form-group {
+            margin-bottom: 16px
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--text);
+            outline: none;
+            transition: .15s;
+            background: white
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 2px rgba(79, 140, 255, 0.1)
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+
+        .form-hint {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 5px
+        }
+
+        /* TOMBOL */
+        .btn-green {
+            width: 100%;
+            padding: 11px;
+            background: var(--green);
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: .15s;
+            margin-top: 4px
+        }
+
+        .btn-green:hover {
+            background: #16a34a
+        }
+
+        /* ALERT */
+        .alert-success {
+            background: var(--green-soft);
+            border: 1px solid #bbf7d0;
+            color: var(--green-dk);
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .alert-error {
+            background: var(--red-soft);
+            border: 1px solid #fecaca;
+            color: var(--red-dk);
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        /* LIST BONUS */
+        .bonus-list {
+            list-style: none
+        }
+
+        .bonus-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .bonus-row:last-child {
+            border-bottom: none
+        }
+
+        .bonus-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0
+        }
+
+        .bonus-icon.green {
+            background: var(--green-soft)
+        }
+
+        .bonus-body {
+            flex: 1;
+            min-width: 0
+        }
+
+        .bonus-nama {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .bonus-desc {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 8px;
+            line-height: 1.4
+        }
+
+        .badge-wrap {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 8px
+        }
+
+        .badge-tipe {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .badge-tipe.blue {
+            background: var(--blue-soft);
+            color: var(--blue-dk)
+        }
+
+        .badge-tipe.green {
+            background: var(--green-soft);
+            color: var(--green-dk)
+        }
+
+        .badge-tipe.amber {
+            background: var(--amber-soft);
+            color: var(--amber-dk)
+        }
+
+        /* RUMUS BOX */
+        .rumus-box {
+            margin-top: 8px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 11px;
+            color: #166534;
+            line-height: 1.5
+        }
+
+        .rumus-box .rumus-baris {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap
+        }
+
+        .rumus-box .rumus-persen {
+            font-weight: 700;
+            color: var(--green)
+        }
+
+        .rumus-box .rumus-dari {
+            color: var(--muted);
+            font-size: 10px
+        }
+
+        .rumus-box .rumus-basis {
+            font-weight: 600;
+            color: #374151
+        }
+
+        .rumus-box .rumus-note {
+            font-size: 10px;
+            color: #166534;
+            margin-top: 4px;
+            font-style: italic
+        }
+
+        /* EDIT DETAILS */
+        details {
+            margin-top: 10px
+        }
+
+        summary {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 7px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            list-style: none;
+            transition: .15s
+        }
+
+        summary:hover {
+            background: var(--blue-soft);
+            color: var(--blue);
+            border-color: var(--blue)
+        }
+
+        summary::-webkit-details-marker {
+            display: none
+        }
+
+        .edit-form {
+            margin-top: 10px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px
+        }
+
+        .edit-form .form-row {
+            gap: 10px;
+            margin-bottom: 10px
+        }
+
+        .edit-form input,
+        .edit-form select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 12px;
+            font-family: inherit;
+            outline: none;
+            background: white
+        }
+
+        .edit-form input:focus,
+        .edit-form select:focus {
+            border-color: var(--blue)
+        }
+
+        .btn-save {
+            padding: 7px 16px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 8px;
+            transition: .15s
+        }
+
+        .btn-save:hover {
+            background: var(--blue-dk)
+        }
+
+        .btn-hapus {
+            padding: 5px 12px;
+            background: var(--red-soft);
+            color: var(--red-dk);
+            border: 1px solid #fca5a5;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: .15s
+        }
+
+        .btn-hapus:hover {
+            background: #fecaca
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+            font-size: 13px
+        }
+
+        .info-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 10px;
+            padding: 14px 18px;
+            font-size: 12px;
+            color: #166534;
+            margin-bottom: 20px;
+            line-height: 1.6
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px
+        }
+
+        .tpl-actions {
+            flex-shrink: 0
+        }
+
+        @media(max-width:768px) {
+            .sidebar {
+                display: none
+            }
+
+            .main {
+                margin-left: 0
+            }
+
+            .form-row {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon"><svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+                </svg></div>
+            <span>SistemGaji</span>
+        </div>
+        <div class="sidebar-admin">
+            <div class="admin-avatar">AD</div>
+            <p>Administrator</p><span>Admin Sistem</span>
+        </div>
+        <nav>
+            <div class="nav-label">Menu</div>
+            <a href="/admin/dashboard" class="nav-item"><span class="nav-icon">📊</span>Dashboard</a>
+            <a href="/admin/absensi" class="nav-item"><span class="nav-icon">📅</span>Kelola Absensi</a>
+            <a href="/admin/izin" class="nav-item"><span class="nav-icon">📋</span>Kelola Izin</a>
+            <a href="/admin/pembayaran" class="nav-item"><span class="nav-icon">💳</span>Pembayaran Gaji</a>
+            <a href="/admin/jabatan" class="nav-item"><span class="nav-icon">🏢</span>Kelola Jabatan</a>
+            <a href="/admin/bonus" class="nav-item active"><span class="nav-icon">🎁</span>Kelola Bonus</a>
+            <a href="/admin/potongan" class="nav-item"><span class="nav-icon">✂️</span>Kelola Potongan</a>
+        </nav>
+        <div class="sidebar-footer"><a href="/logout" class="logout-btn"><span>🚪</span> Keluar</a></div>
+    </aside>
+
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <h2>Kelola Bonus</h2>
+                <p>Buat dan kelola daftar bonus yang bisa dipilih saat proses gaji</p>
+            </div>
+            <span class="date-chip">{{ tanggal_str }}</span>
+        </div>
+
+        <div class="content">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for cat, msg in messages %}
+            <div class="alert-{{ 'success' if cat == 'success' else 'error' }}">
+                {{ '✅' if cat == 'success' else '⚠️' }} {{ msg }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <!-- INFO BOX -->
+            <div class="info-box">
+                <strong>🎁 Tentang Bonus</strong>
+                Bonus akan muncul sebagai opsi yang bisa dicentang saat admin memproses gaji karyawan.
+                Nilai bonus dihitung <strong>otomatis</strong> berdasarkan data absensi bulan tersebut:
+                <ul style="margin-top:8px;margin-left:20px;margin-bottom:0">
+                    <li><strong>% dari Gaji/Hari</strong> = nilai persen × gaji per hari jabatan karyawan</li>
+                    <li><strong>% dari Gaji Bulanan</strong> = nilai persen × total gaji pokok bulan ini</li>
+                    <li><strong>Nominal Tetap</strong> = jumlah rupiah langsung</li>
+                    <li><strong>Per Jam (Lembur)</strong> = nilai × jam lembur karyawan</li>
+                </ul>
+            </div>
+
+            <!-- FORM TAMBAH BONUS -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-header-icon green">✚</div>
+                    <div>
+                        <div class="card-title">Tambah Bonus Baru</div>
+                        <div class="card-sub">Buat opsi bonus untuk digunakan saat proses gaji</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="/admin/bonus/tambah">
+                        <div class="form-group">
+                            <label>Nama Bonus <span style="color:var(--red);font-weight:400">*</span></label>
+                            <input type="text" name="nama" placeholder="cth: Bonus Lembur, Bonus THR, Bonus Kinerja"
+                                required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Tipe Perhitungan</label>
+                                <select name="tipe" required>
+                                    <option value="persen_gaji_harian">% dari Gaji/Hari</option>
+                                    <option value="persen_gaji_bulanan">% dari Gaji Bulanan</option>
+                                    <option value="nominal">Nominal Tetap (Rp)</option>
+                                    <option value="per_jam">Per Jam (Lembur)</option>
+                                </select>
+                                <div class="form-hint">Cara kalkulasi nilai bonus</div>
+                            </div>
+                            <div class="form-group">
+                                <label>Nilai</label>
+                                <input type="number" name="nilai" step="0.01" min="0" placeholder="cth: 150 atau 500000"
+                                    required>
+                                <div class="form-hint">Angka persen (tanpa %) atau nominal rupiah</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Keterangan <span
+                                    style="font-weight:400;text-transform:none">(opsional)</span></label>
+                            <input type="text" name="keterangan" placeholder="cth: 150% dari gaji per hari lembur">
+                        </div>
+                        <div class="form-group">
+                            <label>Aktif?</label>
+                            <select name="aktif">
+                                <option value="1">Ya (aktif)</option>
+                                <option value="0">Tidak (nonaktif)</option>
+                            </select>
+                            <div class="form-hint">Bonus nonaktif tidak akan muncul di form proses gaji</div>
+                        </div>
+                        <button type="submit" class="btn-green">🎁 Tambah Bonus</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- DAFTAR BONUS -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-header-icon green">📋</div>
+                    <div>
+                        <div class="card-title">Daftar Bonus</div>
+                        <div class="card-sub">{{ bonus_list|length }} bonus tersedia</div>
+                    </div>
+                </div>
+
+                {% if bonus_list %}
+                <ul class="bonus-list" style="padding:0 20px 16px">
+                    {% for bt in bonus_list %}
+                    <li class="bonus-row">
+                        <div class="bonus-icon green">
+                            {% if bt.tipe_bonus_salma == 'per_jam' %}⏱
+                            {% elif bt.tipe_bonus_salma == 'persen_gaji_harian' %}📊
+                            {% elif bt.tipe_bonus_salma == 'persen_gaji_bulanan' %}📈
+                            {% else %}💰
+                            {% endif %}
+                        </div>
+                        <div class="bonus-body">
+                            <div class="bonus-nama">
+                                {{ bt.nama_bonus_salma }}
+                                {% if bt.aktif_salma == 0 %}
+                                <span
+                                    style="background:#e5e7eb;color:#6b7280;padding:2px 8px;border-radius:12px;font-size:10px">Nonaktif</span>
+                                {% else %}
+                                <span
+                                    style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:12px;font-size:10px">Aktif</span>
+                                {% endif %}
+                            </div>
+                            <div class="bonus-desc">{{ bt.keterangan_salma or 'Tidak ada keterangan' }}</div>
+
+                            <div class="badge-wrap">
+                                {% if bt.tipe_bonus_salma == 'per_jam' %}
+                                <span class="badge-tipe amber">⏱ Per Jam (Lembur)</span>
+                                <span class="badge-tipe green">Rp {{ "{:,.0f}".format(bt.nilai_bonus_salma)
+                                    }}/jam</span>
+
+                                {% elif bt.tipe_bonus_salma == 'persen_gaji_harian' %}
+                                <span class="badge-tipe blue">📊 {{ bt.nilai_bonus_salma|int }}% × Gaji/Hari</span>
+
+                                {% elif bt.tipe_bonus_salma == 'persen_gaji_bulanan' %}
+                                <span class="badge-tipe blue">📊 {{ bt.nilai_bonus_salma|int }}% × Gaji Bulanan</span>
+
+                                {% else %}
+                                <span class="badge-tipe green">💰 Nominal Tetap</span>
+                                <span class="badge-tipe green">Rp {{ "{:,.0f}".format(bt.nilai_bonus_salma) }}</span>
+                                {% endif %}
+                            </div>
+
+                            {# RUMUS BOX #}
+                            {% if bt.tipe_bonus_salma == 'persen_gaji_harian' %}
+                            <div class="rumus-box">
+                                <div class="rumus-baris">
+                                    <span class="rumus-persen">{{ bt.nilai_bonus_salma|int }}%</span>
+                                    <span class="rumus-dari">diambil dari</span>
+                                    <span class="rumus-basis">Gaji per Hari</span>
+                                    <span class="rumus-dari">jabatan karyawan</span>
+                                </div>
+                                <div class="rumus-note">Nilai dihitung otomatis saat proses gaji</div>
+                            </div>
+
+                            {% elif bt.tipe_bonus_salma == 'persen_gaji_bulanan' %}
+                            <div class="rumus-box">
+                                <div class="rumus-baris">
+                                    <span class="rumus-persen">{{ bt.nilai_bonus_salma|int }}%</span>
+                                    <span class="rumus-dari">diambil dari</span>
+                                    <span class="rumus-basis">Total Gaji Pokok Bulanan</span>
+                                    <span class="rumus-dari">karyawan</span>
+                                </div>
+                                <div class="rumus-note">Nilai dihitung otomatis saat proses gaji</div>
+                            </div>
+
+                            {% elif bt.tipe_bonus_salma == 'per_jam' %}
+                            <div class="rumus-box">
+                                <div class="rumus-baris">
+                                    <span class="rumus-persen">Rp {{ "{:,.0f}".format(bt.nilai_bonus_salma) }}</span>
+                                    <span class="rumus-dari">×</span>
+                                    <span class="rumus-basis">Jumlah Jam Lembur</span>
+                                </div>
+                                <div class="rumus-note">Admin akan mengisi jumlah jam lembur saat proses gaji</div>
+                            </div>
+                            {% endif %}
+
+                            <!-- EDIT INLINE -->
+                            <details>
+                                <summary>✏️ Edit Bonus</summary>
+                                <div class="edit-form">
+                                    <form method="POST" action="/admin/bonus/edit/{{ bt.id_bonus_template }}">
+                                        <div class="form-row">
+                                            <input type="text" name="nama" value="{{ bt.nama_bonus_salma }}"
+                                                placeholder="Nama bonus" required>
+                                            <select name="tipe" required>
+                                                <option value="persen_gaji_harian" {% if
+                                                    bt.tipe_bonus_salma=='persen_gaji_harian' %}selected{% endif %}>%
+                                                    Gaji/Hari</option>
+                                                <option value="per_jam" {% if bt.tipe_bonus_salma=='per_jam'
+                                                    %}selected{% endif %}>Per Jam (Lembur)</option>
+                                                <option value="persen_gaji_bulanan" {% if
+                                                    bt.tipe_bonus_salma=='persen_gaji_bulanan' %}selected{% endif %}>%
+                                                    Gaji Bulanan</option>
+                                                <option value="nominal" {% if bt.tipe_bonus_salma=='nominal'
+                                                    %}selected{% endif %}>Nominal Tetap (Rp)</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-row">
+                                            <input type="number" name="nilai" step="0.01"
+                                                value="{{ bt.nilai_bonus_salma }}" required>
+                                            <input type="text" name="keterangan" value="{{ bt.keterangan_salma or '' }}"
+                                                placeholder="Keterangan">
+                                        </div>
+                                        <div class="form-row">
+                                            <select name="aktif">
+                                                <option value="1" {% if bt.aktif_salma==1 %}selected{% endif %}>Aktif
+                                                </option>
+                                                <option value="0" {% if bt.aktif_salma==0 %}selected{% endif %}>Nonaktif
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn-save">💾 Simpan Perubahan</button>
+                                    </form>
+                                </div>
+                            </details>
+                        </div>
+                        <div class="tpl-actions">
+                            <form method="POST" action="/admin/bonus/hapus/{{ bt.id_bonus_template }}"
+                                onsubmit="return confirm('Yakin hapus bonus {{ bt.nama_bonus_salma }}?')">
+                                <button type="submit" class="btn-hapus">🗑 Hapus</button>
+                            </form>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="empty-state">
+                    <div style="font-size:40px;margin-bottom:12px">🎁</div>
+                    <div>Belum ada data bonus</div>
+                    <div style="font-size:12px;margin-top:6px">Gunakan form di atas untuk menambahkan bonus pertama
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

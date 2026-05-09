@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Absensi — {{ karyawan.nama_salma }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue: #4f8cff;
+            --blue-dk: #2f5fd0;
+            --blue-soft: #eef4ff;
+            --text: #1a1d23;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --bg: #f5f7fb
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 32px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center
+        }
+
+        /* PRINT BAR */
+        .print-bar {
+            width: 100%;
+            max-width: 780px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: white;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            font-family: inherit
+        }
+
+        .btn-print {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 20px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer
+        }
+
+        .btn-print:hover {
+            background: var(--blue-dk)
+        }
+
+        /* FILTER */
+        .filter-bar {
+            width: 100%;
+            max-width: 780px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 16px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 16px
+        }
+
+        .filter-bar select,
+        .filter-bar input {
+            padding: 7px 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--text);
+            outline: none;
+            background: white
+        }
+
+        .filter-bar select:focus,
+        .filter-bar input:focus {
+            border-color: var(--blue)
+        }
+
+        .filter-bar button {
+            padding: 7px 14px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit
+        }
+
+        /* LAPORAN CONTAINER */
+        .laporan {
+            width: 100%;
+            max-width: 780px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .08)
+        }
+
+        /* HEADER */
+        .lap-header {
+            background: linear-gradient(135deg, var(--blue), var(--blue-dk));
+            padding: 24px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white
+        }
+
+        .lap-company {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 3px
+        }
+
+        .lap-subtitle {
+            font-size: 12px;
+            opacity: .85
+        }
+
+        .lap-periode {
+            font-size: 14px;
+            font-weight: 600;
+            text-align: right
+        }
+
+        .lap-no {
+            font-size: 11px;
+            opacity: .7;
+            margin-top: 3px;
+            font-family: monospace
+        }
+
+        /* KARYAWAN INFO */
+        .karyawan-info {
+            padding: 20px 32px;
+            border-bottom: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+
+        .info-item .lbl {
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            margin-bottom: 3px
+        }
+
+        .info-item .val {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text)
+        }
+
+        /* REKAP CARDS */
+        .rekap-row {
+            padding: 16px 32px;
+            border-bottom: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px
+        }
+
+        .rekap-box {
+            background: var(--bg);
+            border-radius: 9px;
+            padding: 12px 14px;
+            text-align: center
+        }
+
+        .rekap-box .rlbl {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 4px
+        }
+
+        .rekap-box .rval {
+            font-size: 20px;
+            font-weight: 700
+        }
+
+        .rv-hadir {
+            color: #16a34a
+        }
+
+        .rv-izin {
+            color: #d97706
+        }
+
+        .rv-sakit {
+            color: #eca552
+        }
+
+        .rv-alpha {
+            color: #dc2626
+        }
+
+        .rv-total {
+            color: var(--text)
+        }
+
+        /* TABLE */
+        .lap-body {
+            padding: 0 32px 24px
+        }
+
+        .lap-table-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            margin: 20px 0 10px
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        thead tr {
+            background: var(--bg)
+        }
+
+        th {
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        td {
+            padding: 11px 12px;
+            font-size: 13px;
+            border-bottom: 1px solid #f3f4f6;
+            color: var(--text)
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none
+        }
+
+        .badge-hadir {
+            background: #dcfce7;
+            color: #166534;
+            padding: 2px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .badge-alpha {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 2px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .badge-izin {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 2px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .badge-sakit {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 2px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        /* FOOTER */
+        .lap-footer {
+            border-top: 1px solid var(--border);
+            padding: 14px 32px;
+            display: flex;
+            justify-content: space-between;
+            background: var(--bg)
+        }
+
+        .lap-footer span {
+            font-size: 11px;
+            color: var(--muted)
+        }
+
+        /* PRINT STYLES */
+        @media print {
+            body {
+                background: white;
+                padding: 0
+            }
+
+            .print-bar,
+            .filter-bar {
+                display: none
+            }
+
+            .laporan {
+                border: none;
+                border-radius: 0;
+                box-shadow: none;
+                max-width: 100%
+            }
+
+            .lap-header {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PRINT BAR -->
+    <div class="print-bar">
+        <a href="/admin/laporan" class="btn-back">← Kembali ke Laporan</a>
+        <div style="display:flex;gap:8px;align-items:center">
+            <span style="font-size:13px;color:var(--muted)">{{ karyawan.nama_salma }} — {{ bulan_nama[bulan] }} {{ tahun
+                }}</span>
+            <button onclick="window.print()" class="btn-print">🖨 Cetak / PDF</button>
+        </div>
+    </div>
+
+    <!-- FILTER -->
+    <form method="GET" class="filter-bar">
+        <span style="font-size:13px;color:var(--muted);font-weight:500">Periode:</span>
+        <select name="bulan">
+            {% for i in range(1,13) %}
+            <option value="{{ i }}" {% if i==bulan %}selected{% endif %}>{{ bulan_nama[i] }}</option>
+            {% endfor %}
+        </select>
+        <input type="number" name="tahun" value="{{ tahun }}" style="width:80px">
+        <button type="submit">Tampilkan</button>
+    </form>
+
+    <!-- LAPORAN -->
+    <div class="laporan">
+
+        <!-- HEADER -->
+        <div class="lap-header">
+            <div>
+                <div class="lap-company">SistemGaji</div>
+                <div class="lap-subtitle">Laporan Absensi Karyawan</div>
+            </div>
+            <div style="text-align:right">
+                <div class="lap-periode">{{ bulan_nama[bulan] }} {{ tahun }}</div>
+                <div class="lap-no">LAP/{{ tahun }}/{{ "%02d"|format(bulan) }}/{{ karyawan.id_user_salma }}</div>
+            </div>
+        </div>
+
+        <!-- INFO KARYAWAN -->
+        <div class="karyawan-info">
+            <div class="info-item">
+                <div class="lbl">Nama Karyawan</div>
+                <div class="val" style="font-size:15px;font-weight:700">{{ karyawan.nama_salma }}</div>
+            </div>
+            <div class="info-item">
+                <div class="lbl">Jabatan</div>
+                <div class="val">{{ karyawan.nama_jabatan_salma or '—' }}</div>
+            </div>
+            <div class="info-item">
+                <div class="lbl">NIP</div>
+                <div class="val" style="font-family:monospace">{{ karyawan.nip_salma }}</div>
+            </div>
+            <div class="info-item">
+                <div class="lbl">ID Karyawan</div>
+                <div class="val" style="font-family:monospace">{{ karyawan.id_user_salma }}</div>
+            </div>
+        </div>
+
+        <!-- REKAP -->
+        <div class="rekap-row">
+            <div class="rekap-box">
+                <div class="rlbl">Total Tercatat</div>
+                <div class="rval rv-total">{{ absensi|length }}</div>
+            </div>
+            <div class="rekap-box">
+                <div class="rlbl">Hadir</div>
+                <div class="rval rv-hadir">{{ total_hadir }}</div>
+            </div>
+            <div class="rekap-box">
+                <div class="rlbl">Izin</div>
+                <div class="rval rv-izin">{{ total_izin }}</div>
+            </div>
+            <div class="rekap-box">
+                <div class="rlbl">Sakit</div>
+                <div class="rval rv-sakit">{{ total_sakit }}</div>
+            </div>
+            <div class="rekap-box">
+                <div class="rlbl">Alpha</div>
+                <div class="rval rv-alpha">{{ total_alpha }}</div>
+            </div>
+        </div>
+
+        <!-- DETAIL TABEL -->
+        <div class="lap-body">
+            <div class="lap-table-title">Detail Kehadiran</div>
+
+            {% set nama_hari = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'] %}
+
+            {% if absensi %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Tanggal</th>
+                        <th>Hari</th>
+                        <th>Status</th>
+                        <th>Jam Masuk</th>
+                        <th>Jam Pulang</th>
+                        <th>Keterangan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in absensi %}
+                    <tr>
+                        <td style="color:var(--muted)">{{ loop.index }}</td>
+                        <td style="font-weight:500">{{ a.tanggal_absensi_salma }}</td>
+                        <td style="color:var(--muted);font-size:12px">{{ nama_hari[a.tanggal_absensi_salma.weekday()] }}
+                        </td>
+                        <td>
+                            {% if a.status_absensi_salma == 'hadir' %}<span class="badge-hadir">Hadir</span>
+                            {% elif a.status_absensi_salma == 'izin' %}<span class="badge-izin">Izin</span>
+                            {% elif a.status_absensi_salma == 'sakit' %}<span class="badge-sakit">Sakit</span>
+                            {% else %}<span class="badge-alpha">Alpha</span>{% endif %}
+                        </td>
+                        <td style="color:var(--muted)">{{ a.jam_masuk_salma or '—' }}</td>
+                        <td style="color:var(--muted)">{{ a.jam_pulang_salma or '—' }}</td>
+                        <td style="color:var(--muted);font-size:12px">{{ a.keterangan_salma or '—' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div style="padding:32px;text-align:center;color:var(--muted);font-size:13px">
+                Tidak ada data absensi untuk {{ bulan_nama[bulan] }} {{ tahun }}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- FOOTER -->
+        <div class="lap-footer">
+            <span>Dokumen digenerate otomatis oleh SistemGaji</span>
+            <span>Dicetak: {{ now.strftime('%d/%m/%Y %H:%M') }}</span>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absen RFID — Sistem Absensi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #f5f7fb 0%, #eef4ff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .rfid-card {
+            background: white;
+            border-radius: 24px;
+            padding: 48px 40px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+        }
+
+        .rfid-anim {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes ping {
+            0% {
+                transform: scale(1);
+                opacity: .8;
+            }
+
+            70% {
+                transform: scale(1.6);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1.6);
+                opacity: 0;
+            }
+        }
+
+        @keyframes wave {
+            0% {
+                transform: scale(.7);
+                opacity: .6;
+            }
+
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .rfid-ping {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: #bfdbfe;
+            animation: ping 1.6s cubic-bezier(0, 0, .2, 1) infinite;
+        }
+
+        .rfid-wave {
+            position: absolute;
+            inset: -12px;
+            border-radius: 50%;
+            border: 2px solid #60a5fa;
+            animation: wave 1.8s ease-out infinite;
+        }
+
+        .rfid-wave2 {
+            animation-delay: .6s;
+        }
+
+        .rfid-wave3 {
+            animation-delay: 1.2s;
+        }
+
+        .rfid-icon {
+            position: relative;
+            z-index: 1;
+            width: 64px;
+            height: 64px;
+            background: #4f8cff;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(79, 140, 255, .4);
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .rfid-icon svg {
+            width: 36px;
+            height: 36px;
+            fill: white;
+        }
+
+        h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1d23;
+            margin-bottom: 8px;
+        }
+
+        p {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1d4ed8;
+        }
+
+        .status-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #3b82f6;
+            animation: ping 1.6s infinite;
+        }
+
+        #feedback {
+            margin-top: 20px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback-success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .feedback-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .feedback-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        .hidden-input {
+            position: absolute;
+            opacity: 0;
+            height: 0;
+            width: 0;
+            border: none;
+        }
+
+        .login-link {
+            margin-top: 28px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .login-link a {
+            color: #4f8cff;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Style untuk form alternatif */
+        .btn-alternatif {
+            background: none;
+            border: none;
+            color: #4f8cff;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 8px;
+            transition: color 0.2s;
+        }
+
+        .btn-alternatif:hover {
+            color: #2f5fd0;
+        }
+
+        .form-alternatif {
+            display: none;
+            margin-top: 16px;
+            text-align: left;
+        }
+
+        .form-alternatif.show {
+            display: block;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .input-alternatif {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-alternatif:focus {
+            border-color: #4f8cff;
+            box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.1);
+        }
+
+        .btn-cari {
+            background: #4f8cff;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-cari:hover {
+            background: #2f5fd0;
+        }
+
+        .feedback-alternatif {
+            margin-top: 10px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .feedback-alternatif.show {
+            display: block;
+        }
+
+        .feedback-alternatif.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .feedback-alternatif.success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .divider {
+            margin-top: 24px;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 20px;
+        }
+
+        .info-text {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="rfid-card">
+        <!-- Animasi RFID -->
+        <div class="rfid-anim">
+            <div class="rfid-ping"></div>
+            <div class="rfid-wave"></div>
+            <div class="rfid-wave rfid-wave2"></div>
+            <div class="rfid-wave rfid-wave3"></div>
+            <div class="rfid-icon">
+                <svg viewBox="0 0 24 24">
+                    <rect x="2" y="5" width="20" height="14" rx="2.5" fill="white" fill-opacity="0.9" />
+                    <rect x="2" y="9" width="20" height="3" fill="white" fill-opacity="0.3" />
+                    <rect x="4" y="14" width="5" height="2" rx="1" fill="#4f8cff" />
+                    <path d="M17 10.5 C18 9.5 18 8 17 7" stroke="#4f8cff" stroke-width="1.2" stroke-linecap="round"
+                        fill="none" />
+                    <path d="M18.5 11.5 C20 10 20 7 18.5 5.5" stroke="#4f8cff" stroke-width="1.2" stroke-linecap="round"
+                        fill="none" />
+                </svg>
+            </div>
+        </div>
+
+        <h1>Tap Kartu RFID</h1>
+        <p>Tempelkan kartu RFID kamu ke perangkat pembaca untuk mencatat kehadiran.</p>
+
+        <div class="status-badge">
+            <span class="dot"></span> Siap membaca kartu…
+        </div>
+
+        <!-- Feedback untuk scan RFID -->
+        <div id="feedback"></div>
+
+        <!-- Input tersembunyi untuk scan RFID -->
+        <input type="text" id="rfidInput" class="hidden-input" autofocus>
+
+        <!-- Divider dan opsi alternatif -->
+        <div class="divider">
+            <button id="btnAlternatif" class="btn-alternatif" type="button">
+                🔄 Kartu tidak bisa digunakan? Klik di sini
+            </button>
+
+            <div id="formAlternatif" class="form-alternatif">
+                <form id="formCari" onsubmit="return cariUser(event)">
+                    <div class="input-group">
+                        <input type="text" id="inputAlternatif" class="input-alternatif"
+                            placeholder="Masukkan ID Kartu" required>
+                        <button type="submit" class="btn-cari">Absen</button>
+                    </div>
+                    <div id="feedbackAlternatif" class="feedback-alternatif"></div>
+                </form>
+                <div class="info-text">
+                    Masukkan ID Kartu RFID untuk absen
+                </div>
+            </div>
+        </div>
+
+        <!-- Link ke halaman login -->
+        <div class="login-link">
+            Sudah Absen & Sudah punya akun? <a href="{{ url_for('login_user') }}">Login di sini</a>
+        </div>
+    </div>
+
+    <script>
+        // ===================== RFID SCAN =====================
+        const inputRFID = document.getElementById('rfidInput');
+        const feedback = document.getElementById('feedback');
+
+        // Auto focus ke input RFID hanya jika form alternatif tidak terbuka
+        window.onload = () => {
+            if (!document.getElementById('formAlternatif').classList.contains('show')) {
+                inputRFID.focus();
+            }
+        };
+
+        // Klik di luar form alternatif fokus ke RFID
+        document.addEventListener('click', function (e) {
+            const formAlt = document.getElementById('formAlternatif');
+            if (!formAlt.contains(e.target) && e.target.id !== 'btnAlternatif') {
+                if (!formAlt.classList.contains('show')) {
+                    inputRFID.focus();
+                }
+            }
+        });
+
+        // Event listener untuk scan RFID
+        inputRFID.addEventListener('change', async function () {
+            const id_kartu = this.value.trim();
+            if (!id_kartu) return;
+
+            feedback.style.display = 'none';
+            feedback.className = '';
+
+            try {
+                const res = await fetch('/rfid/absen', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_kartu })
+                });
+                const data = await res.json();
+
+                let cls = '', msg = '';
+                switch (data.status) {
+                    case 'MASUK':
+                        cls = 'feedback-success';
+                        msg = `✅ Selamat datang, ${data.nama}! Absen masuk tercatat pukul ${data.jam}.`;
+                        break;
+                    case 'PULANG':
+                        cls = 'feedback-success';
+                        msg = `🔵 Selamat pulang, ${data.nama}! Absen pulang tercatat pukul ${data.jam}.`;
+                        break;
+                    case 'SUDAH_LENGKAP':
+                        cls = 'feedback-info';
+                        msg = `ℹ️ ${data.nama}, kamu sudah absen masuk dan pulang hari ini.`;
+                        break;
+                    case 'TIDAK_DIKENAL':
+                        cls = 'feedback-error';
+                        msg = '❌ Kartu tidak dikenal. Silakan hubungi admin.';
+                        break;
+                    case 'NONAKTIF':
+                        cls = 'feedback-error';
+                        msg = `🚫 Akun ${data.nama} sedang nonaktif. Hubungi admin.`;
+                        break;
+                    default:
+                        cls = 'feedback-error';
+                        msg = `⚠️ ${data.pesan || 'Terjadi kesalahan.'}`;
+                }
+                feedback.className = cls;
+                feedback.textContent = msg;
+                feedback.style.display = 'block';
+
+                // Reset setelah 5 detik
+                setTimeout(() => {
+                    feedback.style.display = 'none';
+                    feedback.className = '';
+                }, 5000);
+
+            } catch (err) {
+                feedback.className = 'feedback-error';
+                feedback.textContent = '❌ Gagal terhubung ke server. Coba lagi.';
+                feedback.style.display = 'block';
+            }
+
+            this.value = '';
+        });
+
+        // ===================== FORM ALTERNATIF =====================
+        const btnAlternatif = document.getElementById('btnAlternatif');
+        const formAlternatif = document.getElementById('formAlternatif');
+        const inputAlternatif = document.getElementById('inputAlternatif');
+        const feedbackAlternatif = document.getElementById('feedbackAlternatif');
+
+        // Toggle form alternatif
+        btnAlternatif.addEventListener('click', function (e) {
+            e.stopPropagation(); // Mencegah fokus pindah ke RFID
+            const isShow = formAlternatif.classList.contains('show');
+            if (isShow) {
+                formAlternatif.classList.remove('show');
+                btnAlternatif.textContent = '🔄 Kartu tidak bisa digunakan? Klik di sini';
+                // Kembalikan fokus ke RFID
+                setTimeout(() => inputRFID.focus(), 100);
+            } else {
+                formAlternatif.classList.add('show');
+                btnAlternatif.textContent = '✕ Tutup form alternatif';
+                // Fokus ke input alternatif
+                setTimeout(() => inputAlternatif.focus(), 200);
+            }
+        });
+
+        // Mencegah klik di dalam form alternatif mem-focus RFID
+        formAlternatif.addEventListener('click', function (e) {
+            e.stopPropagation();
+        });
+
+        // Fungsi cari user (hanya berdasarkan ID kartu atau ID user)
+        async function cariUser(e) {
+            e.preventDefault();
+            const q = inputAlternatif.value.trim().toUpperCase();
+
+            // Reset feedback
+            feedbackAlternatif.className = 'feedback-alternatif';
+            feedbackAlternatif.style.display = 'none';
+
+            if (!q) {
+                feedbackAlternatif.className = 'feedback-alternatif error show';
+                feedbackAlternatif.textContent = '❌ Masukkan ID kartu atau ID user terlebih dahulu.';
+                return false;
+            }
+
+            // Tampilkan loading
+            feedbackAlternatif.className = 'feedback-alternatif show';
+            feedbackAlternatif.textContent = '⏳ Memproses absen...';
+
+            try {
+                // Kirim data absen (sama seperti scan RFID)
+                const res = await fetch('/rfid/absen', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_kartu: q })
+                });
+                const data = await res.json();
+
+                let cls = '', msg = '';
+                switch (data.status) {
+                    case 'MASUK':
+                        cls = 'feedback-success';
+                        msg = `✅ Selamat datang, ${data.nama}! Absen masuk tercatat pukul ${data.jam}.`;
+                        break;
+                    case 'PULANG':
+                        cls = 'feedback-success';
+                        msg = `🔵 Selamat pulang, ${data.nama}! Absen pulang tercatat pukul ${data.jam}.`;
+                        break;
+                    case 'SUDAH_LENGKAP':
+                        cls = 'feedback-info';
+                        msg = `ℹ️ ${data.nama}, kamu sudah absen masuk dan pulang hari ini.`;
+                        break;
+                    case 'TIDAK_DIKENAL':
+                        cls = 'feedback-error';
+                        msg = '❌ Kartu/ID tidak dikenal. Silakan hubungi admin.';
+                        break;
+                    case 'NONAKTIF':
+                        cls = 'feedback-error';
+                        msg = `🚫 Akun ${data.nama} sedang nonaktif. Hubungi admin.`;
+                        break;
+                    default:
+                        cls = 'feedback-error';
+                        msg = `⚠️ ${data.pesan || 'Terjadi kesalahan.'}`;
+                }
+                feedbackAlternatif.className = 'feedback-alternatif ' + cls;
+                feedbackAlternatif.textContent = msg;
+                feedbackAlternatif.style.display = 'block';
+
+                // Reset input setelah berhasil
+                inputAlternatif.value = '';
+
+                // Auto-hide setelah 5 detik
+                setTimeout(() => {
+                    feedbackAlternatif.style.display = 'none';
+                    feedbackAlternatif.className = 'feedback-alternatif';
+                }, 5000);
+
+            } catch (err) {
+                feedbackAlternatif.className = 'feedback-alternatif error show';
+                feedbackAlternatif.textContent = '❌ Gagal terhubung ke server. Coba lagi.';
+                console.error('Error:', err);
+            }
+
+            return false;
+        }
+
+        // Enter pada input alternatif juga submit
+        inputAlternatif.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('formCari').dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+
+</html>

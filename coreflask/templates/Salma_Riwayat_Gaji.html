@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Gaji</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue: #4f8cff;
+            --blue-dk: #2f5fd0;
+            --blue-soft: #eef4ff;
+            --sidebar-w: 248px;
+            --header-h: 64px;
+            --radius: 14px;
+            --text: #1a1d23;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --card: #fff;
+            --bg: #f5f7fb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: white;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100
+        }
+
+        .sidebar-logo {
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .logo-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: white
+        }
+
+        .sidebar-logo span {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .sidebar-user {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--blue-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--blue-dk);
+            margin-bottom: 8px;
+            overflow: hidden
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .sidebar-user p {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .sidebar-user span {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        nav {
+            padding: 12px;
+            flex: 1
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .8px;
+            color: var(--muted);
+            text-transform: uppercase;
+            padding: 8px 8px 4px
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
+            transition: .15s;
+            margin-bottom: 2px
+        }
+
+        .nav-item:hover {
+            background: var(--blue-soft);
+            color: var(--blue-dk)
+        }
+
+        .nav-item.active {
+            background: var(--blue-soft);
+            color: var(--blue);
+            font-weight: 600
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0
+        }
+
+        .sidebar-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border)
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: #e53935;
+            font-size: 13px;
+            font-weight: 500;
+            width: 100%
+        }
+
+        .logout-btn:hover {
+            background: #fff5f5
+        }
+
+        /* MAIN */
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column
+        }
+
+        .topbar {
+            height: var(--header-h);
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 28px;
+            gap: 10px
+        }
+
+        .topbar a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 13px
+        }
+
+        .topbar a:hover {
+            color: var(--blue)
+        }
+
+        .topbar-sep {
+            color: var(--border);
+            font-size: 13px
+        }
+
+        .topbar-current {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .content {
+            padding: 28px
+        }
+
+        /* SUMMARY CARDS */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 22px
+        }
+
+        .sum-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 20px
+        }
+
+        .sum-label {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 6px
+        }
+
+        .sum-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text)
+        }
+
+        .sum-sub {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 3px
+        }
+
+        /* TABLE CARD */
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            overflow: hidden
+        }
+
+        .card-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .card-sub {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        thead tr {
+            background: var(--bg)
+        }
+
+        th {
+            padding: 11px 16px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        td {
+            padding: 14px 16px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text)
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none
+        }
+
+        tbody tr:hover {
+            background: #fafbfd
+        }
+
+        /* BADGES */
+        .badge-paid {
+            background: #dcfce7;
+            color: #166534;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .badge-unpaid {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        /* BULAN LABEL */
+        .bulan-label {
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .bulan-tahun {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px
+        }
+
+        /* EMPTY STATE */
+        .empty {
+            padding: 48px;
+            text-align: center;
+            color: var(--muted)
+        }
+
+        .empty p {
+            font-size: 14px;
+            margin-top: 8px
+        }
+
+        /* TOTAL ROW */
+        .total-positive {
+            color: #16a34a;
+            font-weight: 600
+        }
+
+        .total-negative {
+            color: #dc2626;
+            font-weight: 600
+        }
+
+        .total-amount {
+            font-weight: 700;
+            color: var(--blue-dk)
+        }
+
+        @media(max-width:768px) {
+            .sidebar {
+                display: none
+            }
+
+            .main {
+                margin-left: 0
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+                </svg>
+            </div>
+            <span>SistemGaji</span>
+        </div>
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                {% if karyawan.foto_profil_salma %}
+                <img src="/static/foto_profil/{{ karyawan.foto_profil_salma }}" alt="foto">
+                {% else %}
+                {{ karyawan.nama_salma[:2]|upper }}
+                {% endif %}
+            </div>
+            <p>{{ karyawan.nama_salma }}</p>
+            <span>{{ karyawan.nama_jabatan_salma }}</span>
+        </div>
+        <nav>
+            <div class="nav-label">Menu</div>
+            <a href="{{ url_for('karyawan_dashboard') }}" class="nav-item">
+                <span class="nav-icon">🏠</span>Dashboard
+            </a>
+            <a href="{{ url_for('profil') }}" class="nav-item ">
+                <span class="nav-icon">👤</span>Profil
+            </a>
+            <a href="{{ url_for('karyawan_izin') }}" class="nav-item ">
+                <span class="nav-icon">📋</span>Pengajuan Izin
+            </a>
+            <a href="{{ url_for('riwayat_gaji') }}" class="nav-item active">
+                <span class="nav-icon">💰</span>Riwayat Gaji
+            </a>
+            <a href="{{ url_for('ganti_password') }}" class="nav-item ">
+                <span class="nav-icon">🔒</span>Ganti Password
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="logout-btn">
+                <span>🚪</span> Keluar
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+        <div class="topbar">
+            <a href="{{ url_for('karyawan_dashboard') }}">Dashboard</a>
+            <span class="topbar-sep">/</span>
+            <span class="topbar-current">Riwayat Gaji</span>
+        </div>
+
+        <div class="content">
+
+            <!-- SUMMARY -->
+            {% set total_sudah = gaji_list | selectattr("status_gaji_salma","equalto","sudah_dibayar") | list | length
+            %}
+            {% set total_belum = gaji_list | selectattr("status_gaji_salma","equalto","belum_dibayar") | list | length
+            %}
+            {% set grand_total = gaji_list | sum(attribute="total_gaji_salma") %}
+
+            <div class="summary-grid">
+                <div class="sum-card">
+                    <div class="sum-label">Total Catatan Gaji</div>
+                    <div class="sum-value">{{ gaji_list | length }}</div>
+                    <div class="sum-sub">bulan tercatat</div>
+                </div>
+                <div class="sum-card">
+                    <div class="sum-label">Sudah Dibayar</div>
+                    <div class="sum-value" style="color:#16a34a">{{ total_sudah }}</div>
+                    <div class="sum-sub">dari {{ gaji_list | length }} bulan</div>
+                </div>
+                <div class="sum-card">
+                    <div class="sum-label">Belum Dibayar</div>
+                    <div class="sum-value" style="color:#dc2626">{{ total_belum }}</div>
+                    <div class="sum-sub">menunggu pembayaran</div>
+                </div>
+            </div>
+
+            <!-- TABLE -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Semua Riwayat Gaji</div>
+                        <div class="card-sub">Diurutkan dari bulan terbaru</div>
+                    </div>
+                </div>
+
+                {% if gaji_list %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Periode</th>
+                            <th>Gaji Pokok</th>
+                            <th>Bonus</th>
+                            <th>Potongan</th>
+                            <th>Total Diterima</th>
+                            <th>Status</th>
+                            <th>Slip</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for g in gaji_list %}
+                        <tr>
+                            <td>
+                                <div class="bulan-label">
+                                    {% set nama_bulan = ['',
+                                    'Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']
+                                    %}
+                                    {{ nama_bulan[g.bulan_gaji_salma] }}
+                                </div>
+                                <div class="bulan-tahun">{{ g.tahun_gaji_salma }}</div>
+                            </td>
+                            <td>Rp {{ "{:,.0f}".format(g.gaji_pokok_salma) }}</td>
+                            <td class="total-positive">+ Rp {{ "{:,.0f}".format(g.bonus_salma) }}</td>
+                            <td class="total-negative">- Rp {{ "{:,.0f}".format(g.potongan_salma) }}</td>
+                            <td class="total-amount">Rp {{ "{:,.0f}".format(g.total_gaji_salma) }}</td>
+                            <td>
+                                {% if g.status_gaji_salma == 'sudah_dibayar' %}
+                                <span class="badge-paid">Sudah Dibayar</span>
+                                {% else %}
+                                <span class="badge-unpaid">Belum Dibayar</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="/slip_gaji/{{ g.id_gaji_salma }}" target="_blank"
+                                    style="display:inline-block;padding:5px 12px;background:#eef4ff;color:#2f5fd0;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none">
+                                    🖨 Cetak
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty">
+                    <div style="font-size:32px">💰</div>
+                    <p>Belum ada data gaji</p>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

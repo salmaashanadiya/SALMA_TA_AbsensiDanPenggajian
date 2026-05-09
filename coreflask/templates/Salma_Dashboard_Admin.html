@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue: #4f8cff;
+            --blue-dk: #2f5fd0;
+            --blue-soft: #eef4ff;
+            --sidebar-w: 248px;
+            --header-h: 64px;
+            --radius: 14px;
+            --text: #1a1d23;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --card: #fff;
+            --bg: #f5f7fb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: white;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100
+        }
+
+        .sidebar-logo {
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .logo-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: white
+        }
+
+        .sidebar-logo span {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .sidebar-admin {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fef3c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 8px
+        }
+
+        .sidebar-admin p {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .sidebar-admin span {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        nav {
+            padding: 12px;
+            flex: 1
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .8px;
+            color: var(--muted);
+            text-transform: uppercase;
+            padding: 8px 8px 4px
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
+            transition: .15s;
+            margin-bottom: 2px
+        }
+
+        .nav-item:hover {
+            background: var(--blue-soft);
+            color: var(--blue-dk)
+        }
+
+        .nav-item.active {
+            background: var(--blue-soft);
+            color: var(--blue);
+            font-weight: 600
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0
+        }
+
+        .sidebar-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border)
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: #e53935;
+            font-size: 13px;
+            font-weight: 500;
+            width: 100%;
+            transition: .15s
+        }
+
+        .logout-btn:hover {
+            background: #fff5f5
+        }
+
+        /* ── BADGE NOTIF SIDEBAR ── */
+        .pending-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 20px;
+            margin-left: auto
+        }
+
+        .pending-badge-orange {
+            background: #f97316;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 20px;
+            margin-left: auto
+        }
+
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column
+        }
+
+        .topbar {
+            height: var(--header-h);
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 50
+        }
+
+        .topbar-left h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .topbar-left p {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .date-chip {
+            background: var(--blue-soft);
+            color: var(--blue-dk);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500
+        }
+
+        .content {
+            padding: 24px 28px
+        }
+
+        /* ── STAT GRID — 6 kolom ── */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 14px;
+            margin-bottom: 22px
+        }
+
+        .stat-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            border: 1px solid var(--border);
+            transition: .15s
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .07)
+        }
+
+        .stat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            margin-bottom: 10px
+        }
+
+        .icon-blue {
+            background: #dbeafe
+        }
+
+        .icon-green {
+            background: #dcfce7
+        }
+
+        .icon-red {
+            background: #fee2e2
+        }
+
+        .icon-yellow {
+            background: #fef9c3
+        }
+
+        .icon-purple {
+            background: #f3e8ff
+        }
+
+        .icon-orange {
+            background: #ffedd5
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 500;
+            margin-bottom: 4px
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1
+        }
+
+        .stat-sub {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 4px
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 18px
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .card-sub {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px
+        }
+
+        .filter-row {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center
+        }
+
+        .filter-input,
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--text);
+            outline: none;
+            background: white;
+            transition: .15s
+        }
+
+        .filter-input:focus,
+        .filter-select:focus {
+            border-color: var(--blue)
+        }
+
+        .btn-filter {
+            padding: 8px 16px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: .15s
+        }
+
+        .btn-filter:hover {
+            background: var(--blue-dk)
+        }
+
+        .btn-reset {
+            padding: 8px 14px;
+            background: white;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center
+        }
+
+        .btn-reset:hover {
+            background: var(--bg)
+        }
+
+        .table-wrap {
+            overflow-x: auto
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        thead tr {
+            background: var(--bg)
+        }
+
+        th {
+            padding: 11px 16px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        td {
+            padding: 13px 16px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text)
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none
+        }
+
+        tbody tr:hover {
+            background: #fafbfd
+        }
+
+        .badge-hadir {
+            background: #dcfce7;
+            color: #166534;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .badge-alpha {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .badge-izin {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--blue);
+            color: white;
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: .15s;
+            text-decoration: none
+        }
+
+        .btn-primary:hover {
+            background: var(--blue-dk)
+        }
+
+        .btn-add {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--blue);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 9px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: .15s;
+            text-decoration: none
+        }
+
+        .btn-add:hover {
+            background: var(--blue-dk)
+        }
+
+        .name-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .mini-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--blue-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--blue-dk);
+            flex-shrink: 0;
+            overflow: hidden
+        }
+
+        .mini-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .empty-row td {
+            text-align: center;
+            color: var(--muted);
+            padding: 32px
+        }
+
+        @media(max-width:1200px) {
+            .stat-grid {
+                grid-template-columns: repeat(3, 1fr)
+            }
+        }
+
+        @media(max-width:768px) {
+            .sidebar {
+                display: none
+            }
+
+            .main {
+                margin-left: 0
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+                </svg>
+            </div>
+            <span>SistemGaji</span>
+        </div>
+        <div class="sidebar-admin">
+            <div class="admin-avatar">AD</div>
+            <p>Administrator</p>
+            <span>Admin Sistem</span>
+        </div>
+        <nav>
+            <div class="nav-label">Menu</div>
+            <a href="/admin/dashboard" class="nav-item active"><span class="nav-icon">📊</span>Dashboard</a>
+            <a href="/admin/absensi" class="nav-item"><span class="nav-icon">📅</span>Kelola Absensi</a>
+
+            <!-- Kelola Izin (normal) -->
+            <a href="/admin/izin" class="nav-item">
+                <span class="nav-icon">📋</span>Kelola Izin
+                {% if notif_izin > 0 %}
+                <span class="pending-badge">{{ notif_izin }}</span>
+                {% endif %}
+            </a>
+
+            <!-- ✅ BARU: Izin Khusus -->
+            <a href="/admin/izin_khusus" class="nav-item">
+                <span class="nav-icon">🔥</span>Izin Khusus
+                {% if notif_khusus > 0 %}
+                <span class="pending-badge-orange">{{ notif_khusus }}</span>
+                {% endif %}
+            </a>
+
+            <a href="/admin/surat_peringatan" class="nav-item">
+                <span class="nav-icon">⚠️</span>Surat Peringatan
+                {% if notif_sp > 0 %}
+                <span class="pending-badge">{{ notif_sp }}</span>
+                {% endif %}
+            </a>
+
+            <a href="/admin/pembayaran" class="nav-item"><span class="nav-icon">💳</span>Pembayaran Gaji</a>
+            <a href="/admin/jabatan" class="nav-item"><span class="nav-icon">🏢</span>Kelola Jabatan</a>
+            <a href="/admin/hari_libur" class="nav-item"><span class="nav-icon">🗓</span>Hari Libur</a>
+            <a href="/admin/laporan" class="nav-item"><span class="nav-icon">📈</span>Laporan Absensi</a>
+            <a href="/admin/request" class="nav-item">
+                <span class="nav-icon">📩</span>Request Akun
+                {% if notif_request > 0 %}<span class="pending-badge">{{ notif_request }}</span>{% endif %}
+            </a>
+            <a href="{{ url_for('admin_rfid') }}" class="nav-item"><span class="nav-icon">📡</span>Kelola RFID</a>
+        </nav>
+
+    </aside>
+
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <h2>Dashboard Admin</h2>
+                <p>Kelola data karyawan dan absensi</p>
+            </div>
+            <div class="topbar">
+                <div style="display:flex;align-items:center;gap:10px">
+                    <span class="date-chip">{{ tanggal_str }}</span>
+                    <a href="/logout"
+                        style="display:flex;align-items:center;gap:6px;padding:6px 14px;background:#fee2e2;color:#991b1b;border-radius:20px;font-size:12px;font-weight:600;text-decoration:none;transition:.15s"
+                        onmouseover="this.style.background='#fecaca'" onmouseout="this.style.background='#fee2e2'">
+                        🚪 Keluar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- ── NOTIFIKASI BANNER ── -->
+            {% if notif_izin > 0 or notif_khusus > 0 or notif_gaji > 0 or notif_belum_absen > 0 %}
+            <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px">
+
+                {% if notif_izin > 0 %}
+                <a href="/admin/izin"
+                    style="display:flex;align-items:center;gap:12px;background:#fef9c3;border:1px solid #fde68a;border-radius:10px;padding:12px 16px;text-decoration:none;color:#92400e">
+                    <span style="font-size:16px">📋</span>
+                    <span style="font-size:13px;font-weight:500">Ada <strong>{{ notif_izin }} pengajuan izin</strong>
+                        yang belum diproses</span>
+                    <span style="margin-left:auto;font-size:12px;font-weight:600">Lihat →</span>
+                </a>
+                {% endif %}
+
+
+                {% if notif_khusus > 0 %}
+                <a href="/admin/izin_khusus"
+                    style="display:flex;align-items:center;gap:12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px 16px;text-decoration:none;color:#c2410c">
+                    <span style="font-size:16px">🔥</span>
+                    <span style="font-size:13px;font-weight:500">Ada <strong>{{ notif_khusus }} pengajuan izin
+                            khusus</strong> yang menunggu keputusan</span>
+                    <span style="margin-left:auto;font-size:12px;font-weight:600">Tinjau →</span>
+                </a>
+                {% endif %}
+
+                {% if notif_gaji > 0 %}
+                <a href="/admin/pembayaran"
+                    style="display:flex;align-items:center;gap:12px;background:#fee2e2;border:1px solid #fecaca;border-radius:10px;padding:12px 16px;text-decoration:none;color:#991b1b">
+                    <span style="font-size:16px">💳</span>
+                    <span style="font-size:13px;font-weight:500">Ada <strong>{{ notif_gaji }} gaji bulan ini</strong>
+                        yang belum dibayarkan</span>
+                    <span style="margin-left:auto;font-size:12px;font-weight:600">Lihat →</span>
+                </a>
+                {% endif %}
+
+                {% if notif_belum_absen > 0 %}
+                <div
+                    style="display:flex;align-items:center;gap:12px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:12px 16px;color:#0369a1">
+                    <span style="font-size:16px">⏰</span>
+                    <span style="font-size:13px;font-weight:500"><strong>{{ notif_belum_absen }} karyawan</strong> belum
+                        absen hari ini</span>
+                </div>
+                {% endif %}
+
+                {% if notif_sp > 0 %}
+                <a href="/admin/surat_peringatan"
+                    style="display:flex;align-items:center;gap:12px;background:#fef9c3;border:1px solid #fde68a;border-radius:10px;padding:12px 16px;text-decoration:none;color:#92400e">
+                    <span style="font-size:16px">⚠️</span>
+                    <span style="font-size:13px;font-weight:500">Ada <strong>{{ notif_sp }} Surat Peringatan</strong>
+                        yang belum dikirim ke karyawan</span>
+                    <span style="margin-left:auto;font-size:12px;font-weight:600">Kirim →</span>
+                </a>
+                {% endif %}
+
+                {% if notif_sp3_nonaktif > 0 %}
+                <a href="/admin/surat_peringatan?status=tidak_direspon"
+                    style="display:flex;align-items:center;gap:12px;background:#fee2e2;border:1px solid #fecaca;border-radius:10px;padding:12px 16px;text-decoration:none;color:#991b1b">
+                    <span style="font-size:16px">🚨</span>
+                    <span style="font-size:13px;font-weight:500">Ada <strong>{{ notif_sp3_nonaktif }} karyawan
+                            SP3</strong> tidak merespon — pertimbangkan penonaktifan</span>
+                    <span style="margin-left:auto;font-size:12px;font-weight:600">Tindak lanjuti →</span>
+                </a>
+                {% endif %}
+
+            </div>
+            {% endif %}
+
+            <!-- ── STAT CARDS — 6 kartu ── -->
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-icon icon-blue">👥</div>
+                    <div class="stat-label">Karyawan Aktif</div>
+                    <div class="stat-value">{{ total_user }}</div>
+                    <div class="stat-sub">terdaftar & aktif</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-green">✅</div>
+                    <div class="stat-label">Hadir Hari Ini</div>
+                    <div class="stat-value">{{ total_hadir }}</div>
+                    <div class="stat-sub">dari {{ total_user }} karyawan</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-yellow">📋</div>
+                    <div class="stat-label">Izin / Sakit</div>
+                    <div class="stat-value" style="color:#d97706">{{ total_izin }}</div>
+                    <div class="stat-sub">izin & sakit hari ini</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-red">❌</div>
+                    <div class="stat-label">Alpha</div>
+                    <div class="stat-value" style="color:#dc2626">{{ tidak_hadir }}</div>
+                    <div class="stat-sub">tidak ada keterangan</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-purple">⏰</div>
+                    <div class="stat-label">Belum Absen</div>
+                    <div class="stat-value" style="color:#7e22ce">{{ belum_absen }}</div>
+                    <div class="stat-sub">belum tercatat hari ini</div>
+                </div>
+
+
+                <a href="/admin/izin_khusus" style="text-decoration:none">
+                    <div class="stat-card" style="border-color:{% if notif_khusus > 0 %}#fed7aa{% else %}var(--border){% endif %};
+                           background:{% if notif_khusus > 0 %}#fff7ed{% else %}var(--card){% endif %};
+                           height:100%">
+                        <div class="stat-icon icon-orange">🔥</div>
+                        <div class="stat-label">Izin Khusus</div>
+                        <div class="stat-value" style="color:#f97316">{{ notif_khusus }}</div>
+                        <div class="stat-sub">menunggu keputusan</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- DATA KARYAWAN -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Data Karyawan</div>
+                        <div class="card-sub">Daftar seluruh karyawan</div>
+                    </div>
+                    <a href="/admin/tambah_karyawan_page" class="btn-add">+ Tambah Karyawan</a>
+                </div>
+
+                <form method="GET" action="/admin/dashboard" class="filter-row">
+                    <input type="text" name="keyword" placeholder="Cari nama / ID / NIP..." class="filter-input"
+                        value="{{ keyword }}" style="min-width:200px">
+                    <select name="jabatan" class="filter-select" style="min-width:170px">
+                        <option value="">Semua Jabatan</option>
+                        {% for j in jabatan_list %}
+                        <option value="{{ j.id_jabatan_salma }}" {% if filter_jabatan==j.id_jabatan_salma|string
+                            %}selected{% endif %}>
+                            {{ j.nama_jabatan_salma }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn-filter">Filter</button>
+                    <a href="/admin/dashboard" class="btn-reset">Reset</a>
+                </form>
+
+                {% if keyword or filter_jabatan %}
+                <div
+                    style="padding:10px 20px;background:#fef9c3;border-bottom:1px solid var(--border);font-size:12px;color:#92400e">
+                    Menampilkan <strong>{{ karyawan|length }}</strong> hasil
+                    {% if keyword %} untuk "<strong>{{ keyword }}</strong>"{% endif %}
+                    {% if filter_jabatan %}
+                    jabatan "<strong>
+                        {% for j in jabatan_list %}{% if j.id_jabatan_salma|string == filter_jabatan %}{{
+                        j.nama_jabatan_salma }}{% endif %}{% endfor %}
+                    </strong>"
+                    {% endif %}
+                    — <a href="/admin/dashboard" style="color:#92400e;font-weight:600">Hapus filter</a>
+                </div>
+                {% endif %}
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nama</th>
+                                <th>NIP</th>
+                                <th>Jabatan</th>
+                                <th>Email</th>
+                                <th>SP</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for k in karyawan %}
+                            <tr>
+                                <td style="color:var(--muted);font-size:12px">{{ k.id_user_salma }}</td>
+                                <td>
+                                    <div class="name-cell">
+                                        <div class="mini-avatar">
+                                            {% if k.foto_profil_salma %}
+                                            <img src="/static/foto_profil/{{ k.foto_profil_salma }}" alt="foto">
+                                            {% else %}
+                                            {{ k.nama_salma[:2]|upper }}
+                                            {% endif %}
+                                        </div>
+                                        {{ k.nama_salma }}
+                                    </div>
+                                </td>
+                                <td style="color:var(--muted)">{{ k.nip_salma }}</td>
+                                <td>{{ k.nama_jabatan_salma if k.nama_jabatan_salma else '—' }}</td>
+                                <td style="color:var(--muted)">{{ k.email_salma }}</td>
+                                <td>
+                                    {% if k.total_alpha_tahun >= 9 %}
+                                    <span
+                                        style="background:#fee2e2;color:#991b1b;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600">SP3</span>
+                                    {% elif k.total_alpha_tahun >= 6 %}
+                                    <span
+                                        style="background:#fff7ed;color:#c2410c;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600">SP2</span>
+                                    {% elif k.total_alpha_tahun >= 3 %}
+                                    <span
+                                        style="background:#fef9c3;color:#92400e;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600">SP1</span>
+                                    {% else %}
+                                    <span
+                                        style="background:#dcfce7;color:#166534;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600">Aman</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if k.status_user_salma == 'aktif' %}
+                                    <span
+                                        style="background:#dcfce7;color:#166534;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600">Aktif</span>
+                                    {% else %}
+                                    <span
+                                        style="background:#fee2e2;color:#991b1b;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600">Nonaktif</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+                                        <a href="/admin/proses_gaji/{{ k.id_user_salma }}" class="btn-primary">💰
+                                            Gaji</a>
+                                        <a href="/admin/karyawan/toggle/{{ k.id_user_salma }}"
+                                            style="padding:7px 12px;background:{% if k.status_user_salma=='aktif' %}#fee2e2{% else %}#dcfce7{% endif %};color:{% if k.status_user_salma=='aktif' %}#991b1b{% else %}#166534{% endif %};border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center"
+                                            onclick="return confirm('Ubah status karyawan ini?')">
+                                            {% if k.status_user_salma == 'aktif' %}🚫 Nonaktif{% else %}✅ Aktifkan{%
+                                            endif %}
+                                        </a>
+                                        <details style="position:relative">
+                                            <summary
+                                                style="padding:7px 12px;background:#fef3c7;color:#92400e;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;list-style:none;display:inline-flex;align-items:center">
+                                                🔑 Reset PW
+                                            </summary>
+                                            <div
+                                                style="position:absolute;top:36px;left:0;background:white;border:1px solid var(--border);border-radius:10px;padding:14px;width:220px;z-index:99;box-shadow:0 8px 24px rgba(0,0,0,.1)">
+                                                <div
+                                                    style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px">
+                                                    Reset password {{ k.nama_salma }}
+                                                </div>
+                                                <form method="POST"
+                                                    action="/admin/reset_password/{{ k.id_user_salma }}">
+                                                    <input type="password" name="password_baru"
+                                                        placeholder="Password baru (min 6)" required
+                                                        style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit;outline:none;margin-bottom:8px">
+                                                    <button type="submit"
+                                                        style="width:100%;padding:7px;background:var(--blue);color:white;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer">
+                                                        Simpan
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </details>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr class="empty-row">
+                                <td colspan="8">
+                                    {% if keyword or filter_jabatan %}Tidak ada karyawan yang cocok dengan filter
+                                    {% else %}Belum ada data karyawan{% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ABSENSI TERBARU -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Absensi Terbaru</div>
+                        <div class="card-sub">5 catatan absensi terakhir</div>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Karyawan</th>
+                                <th>Tanggal</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for a in recent_absen %}
+                            <tr>
+                                <td>
+                                    <div class="name-cell">
+                                        <div class="mini-avatar">
+                                            {% if a.foto_profil_salma %}
+                                            <img src="/static/foto_profil/{{ a.foto_profil_salma }}" alt="foto">
+                                            {% else %}
+                                            {{ a.nama_salma[:2]|upper }}
+                                            {% endif %}
+                                        </div>
+                                        {{ a.nama_salma }}
+                                    </div>
+                                </td>
+                                <td style="color:var(--muted)">{{ a.tanggal_absensi_salma }}</td>
+                                <td>
+                                    {% if a.status_absensi_salma == 'hadir' %}
+                                    <span class="badge-hadir">Hadir</span>
+                                    {% elif a.status_absensi_salma in ['izin','sakit'] %}
+                                    <span class="badge-izin">{{ a.status_absensi_salma|capitalize }}</span>
+                                    {% else %}
+                                    <span class="badge-alpha">Alpha</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr class="empty-row">
+                                <td colspan="3">Belum ada data absensi</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

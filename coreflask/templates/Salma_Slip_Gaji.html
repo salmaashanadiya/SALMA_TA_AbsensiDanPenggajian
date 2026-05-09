@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slip Gaji — {{ data.nama_salma }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue: #4f8cff;
+            --blue-dk: #2f5fd0;
+            --blue-soft: #eef4ff;
+            --green: #16a34a;
+            --green-soft: #dcfce7;
+            --red: #dc2626;
+            --red-soft: #fff1f1;
+            --text: #1a1d23;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --bg: #f5f7fb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 32px 16px;
+        }
+
+        /* ── TOMBOL ── */
+        .print-bar {
+            width: 100%;
+            max-width: 720px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: white;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .btn-print {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 20px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background .15s;
+        }
+
+        .btn-print:hover {
+            background: var(--blue-dk)
+        }
+
+        /* ── SLIP CONTAINER ── */
+        .slip {
+            width: 100%;
+            max-width: 720px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .08);
+        }
+
+        /* ── HEADER ── */
+        .slip-header {
+            background: linear-gradient(135deg, var(--blue), var(--blue-dk));
+            padding: 28px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .slip-company {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px
+        }
+
+        .slip-title {
+            font-size: 13px;
+            opacity: .85
+        }
+
+        .slip-header-right {
+            text-align: right
+        }
+
+        .slip-periode {
+            font-size: 15px;
+            font-weight: 600
+        }
+
+        .slip-no {
+            font-size: 11px;
+            opacity: .75;
+            margin-top: 3px;
+            font-family: monospace
+        }
+
+        /* ── BODY ── */
+        .slip-body {
+            padding: 28px 32px
+        }
+
+        /* ── INFO KARYAWAN ── */
+        .karyawan-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .info-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text)
+        }
+
+        /* ── SECTION TITLE ── */
+        .section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .7px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ── DETAIL ITEM ── */
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 9px 13px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 13px;
+            gap: 12px;
+        }
+
+        .detail-item.bonus-item {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+        }
+
+        .detail-item.potongan-item {
+            background: #fff7f7;
+            border: 1px solid #fecaca;
+        }
+
+        .detail-item-left {
+            flex: 1;
+            min-width: 0
+        }
+
+        .detail-item-name {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 2px;
+            font-size: 13px
+        }
+
+        .detail-item-note {
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.4
+        }
+
+        .detail-item-amt {
+            font-weight: 700;
+            white-space: nowrap;
+            align-self: center;
+            font-size: 13px
+        }
+
+        .bonus-item .detail-item-amt {
+            color: var(--green)
+        }
+
+        .potongan-item .detail-item-amt {
+            color: var(--red)
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-detail {
+            padding: 10px 13px;
+            font-size: 12px;
+            color: var(--muted);
+            font-style: italic;
+            background: #fafafa;
+            border-radius: 8px;
+            border: 1px dashed var(--border);
+            margin-bottom: 5px;
+        }
+
+        /* ── SUBTOTAL ROWS ── */
+        .subtotal-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 9px 13px;
+            border-radius: 8px;
+            margin-top: 8px;
+            margin-bottom: 22px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .subtotal-row.penghasilan {
+            background: var(--blue-soft);
+            color: var(--blue-dk);
+        }
+
+        .subtotal-row.potongan-total {
+            background: var(--red-soft);
+            color: var(--red);
+        }
+
+        /* ── KALKULASI AKHIR ── */
+        .kalkulasi-box {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .kalkulasi-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            padding: 7px 0;
+            border-bottom: 1px dashed #e5e7eb;
+        }
+
+        .kalkulasi-row:last-child {
+            border-bottom: none;
+            padding-top: 10px;
+        }
+
+        .kalkulasi-row .k-lbl {
+            color: var(--muted)
+        }
+
+        .kalkulasi-row .k-amt {
+            font-weight: 600
+        }
+
+        .kalkulasi-row .k-amt.plus {
+            color: var(--green)
+        }
+
+        .kalkulasi-row .k-amt.minus {
+            color: var(--red)
+        }
+
+        .kalkulasi-row.final .k-lbl {
+            font-weight: 700;
+            color: var(--text);
+            font-size: 14px
+        }
+
+        .kalkulasi-row.final .k-amt {
+            font-size: 15px;
+            color: var(--text)
+        }
+
+        /* ── TOTAL BOX ── */
+        .total-box {
+            background: linear-gradient(135deg, var(--blue), var(--blue-dk));
+            border-radius: 12px;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            color: white;
+        }
+
+        .total-label {
+            font-size: 13px;
+            opacity: .9
+        }
+
+        .total-amount {
+            font-size: 26px;
+            font-weight: 700
+        }
+
+        /* ── REKENING ── */
+        .rekening-section {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border);
+        }
+
+        .rekening-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            margin-bottom: 6px;
+        }
+
+        .rekening-bank {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .rekening-no {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--blue-dk);
+            font-family: monospace;
+            letter-spacing: .5px
+        }
+
+        .rekening-an {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px
+        }
+
+        .rekening-empty {
+            font-size: 13px;
+            color: var(--muted);
+            font-style: italic
+        }
+
+        /* ── STATUS ── */
+        .status-section {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 24px
+        }
+
+        .status-paid {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: var(--green-soft);
+            color: #166534;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 2px solid #bbf7d0;
+        }
+
+        .status-unpaid {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: #fee2e2;
+            color: #991b1b;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 2px solid #fecaca;
+        }
+
+        /* ── FOOTER ── */
+        .slip-footer {
+            border-top: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg);
+        }
+
+        .slip-footer-note {
+            font-size: 11px;
+            color: var(--muted)
+        }
+
+        .slip-footer-date {
+            font-size: 11px;
+            color: var(--muted)
+        }
+
+        /* ── PRINT ── */
+        @media print {
+            body {
+                background: white;
+                padding: 0
+            }
+
+            .print-bar {
+                display: none !important
+            }
+
+            .slip {
+                border: none;
+                border-radius: 0;
+                box-shadow: none;
+                max-width: 100%
+            }
+
+            .slip-header,
+            .total-box {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact
+            }
+
+            .detail-item.bonus-item,
+            .detail-item.potongan-item,
+            .subtotal-row {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact
+            }
+
+            a {
+                text-decoration: none;
+                color: inherit
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOMBOL AKSI -->
+    <div class="print-bar">
+        <a href="{{ url_for('riwayat_gaji') }}" class="btn-back">← Kembali</a>
+        <div style="display:flex;gap:10px;align-items:center">
+            <span style="font-size:13px;color:var(--muted)">Slip Gaji — {{ data.nama_salma }}</span>
+            <button onclick="window.print()" class="btn-print">🖨 Cetak / Simpan PDF</button>
+        </div>
+    </div>
+
+    <div class="slip">
+
+        <!-- HEADER -->
+        <div class="slip-header">
+            <div>
+                <div class="slip-company">SistemGaji</div>
+                <div class="slip-title">Slip Gaji Karyawan</div>
+            </div>
+            <div class="slip-header-right">
+                <div class="slip-periode">{{ bulan_nama[data.bulan_gaji_salma] }} {{ data.tahun_gaji_salma }}</div>
+                <div class="slip-no">No: SLIP/{{ data.tahun_gaji_salma }}/{{ "%02d"|format(data.bulan_gaji_salma) }}/{{
+                    data.id_user_salma }}</div>
+            </div>
+        </div>
+
+        <div class="slip-body">
+
+            <!-- INFO KARYAWAN -->
+            <div class="karyawan-section">
+                <div>
+                    <div style="margin-bottom:14px">
+                        <div class="info-label">Nama Karyawan</div>
+                        <div class="info-value" style="font-size:16px;font-weight:700">{{ data.nama_salma }}</div>
+                    </div>
+                    <div>
+                        <div class="info-label">Jabatan</div>
+                        <div class="info-value">{{ data.nama_jabatan_salma or '—' }}</div>
+                    </div>
+                </div>
+                <div>
+                    <div style="margin-bottom:14px">
+                        <div class="info-label">NIP</div>
+                        <div class="info-value" style="font-family:monospace">{{ data.nip_salma }}</div>
+                    </div>
+                    <div>
+                        <div class="info-label">Periode</div>
+                        <div class="info-value">{{ bulan_nama[data.bulan_gaji_salma] }} {{ data.tahun_gaji_salma }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ════════════════════════════════
+                 PENGHASILAN
+            ════════════════════════════════ -->
+            <div class="section-title">💰 Rincian Penghasilan</div>
+
+            <!-- Gaji Pokok -->
+            <div class="detail-item bonus-item">
+                <div class="detail-item-left">
+                    <div class="detail-item-name">Gaji Pokok</div>
+                    <div class="detail-item-note">
+                        Rp {{ "{:,.0f}".format(data.gaji_per_hari_salma or 0) }} × hari hadir
+                    </div>
+                </div>
+                <div class="detail-item-amt">Rp {{ "{:,.0f}".format(data.gaji_pokok_salma) }}</div>
+            </div>
+
+            <!-- Tunjangan Jabatan -->
+            {% if data.tunjangan_salma and data.tunjangan_salma > 0 %}
+            <div class="detail-item bonus-item">
+                <div class="detail-item-left">
+                    <div class="detail-item-name">Tunjangan Jabatan</div>
+                    <div class="detail-item-note">Tunjangan tetap sesuai jabatan</div>
+                </div>
+                <div class="detail-item-amt">Rp {{ "{:,.0f}".format(data.tunjangan_salma) }}</div>
+            </div>
+            {% endif %}
+
+            <!-- Detail Bonus dari JSON -->
+            {% if detail_bonus %}
+            {% for item in detail_bonus %}
+            <div class="detail-item bonus-item">
+                <div class="detail-item-left">
+                    <div class="detail-item-name">{{ item.nama }}</div>
+                    {% if item.keterangan %}
+                    <div class="detail-item-note">{{ item.keterangan }}</div>
+                    {% endif %}
+                </div>
+                <div class="detail-item-amt">+ Rp {{ "{:,.0f}".format(item.nominal) }}</div>
+            </div>
+            {% endfor %}
+            {% elif data.bonus_salma and data.bonus_salma > 0 %}
+            <div class="detail-item bonus-item">
+                <div class="detail-item-left">
+                    <div class="detail-item-name">Bonus</div>
+                    <div class="detail-item-note" style="color:#d97706">
+                        ⚠️ Detail tidak tersedia — proses ulang gaji ini untuk melihat rincian
+                    </div>
+                </div>
+                <div class="detail-item-amt">+ Rp {{ "{:,.0f}".format(data.bonus_salma) }}</div>
+            </div>
+            {% endif %}
+
+            <!-- Subtotal Penghasilan -->
+            {% set subtotal_penghasilan = data.gaji_pokok_salma + (data.tunjangan_salma or 0) + (data.bonus_salma or 0)
+            %}
+            <div class="subtotal-row penghasilan">
+                <span>Total Penghasilan</span>
+                <span>Rp {{ "{:,.0f}".format(subtotal_penghasilan) }}</span>
+            </div>
+
+            <!-- ════════════════════════════════
+                 POTONGAN
+            ════════════════════════════════ -->
+            <div class="section-title">✂️ Rincian Potongan</div>
+
+            <!-- Detail Potongan dari JSON -->
+            {% if detail_potongan %}
+            {% for item in detail_potongan %}
+            <div class="detail-item potongan-item">
+                <div class="detail-item-left">
+                    <div class="detail-item-name">{{ item.nama }}</div>
+                    {% if item.keterangan %}
+                    <div class="detail-item-note">{{ item.keterangan }}</div>
+                    {% endif %}
+                </div>
+                <div class="detail-item-amt">− Rp {{ "{:,.0f}".format(item.nominal) }}</div>
+            </div>
+            {% endfor %}
+            {% elif data.potongan_salma and data.potongan_salma > 0 %}
+            <div class="detail-item potongan-item">
+                <div class="detail-item-left">
+                    <div class="detail-item-name">Potongan</div>
+                    <div class="detail-item-note" style="color:#d97706">
+                        ⚠️ Detail tidak tersedia — proses ulang gaji ini untuk melihat rincian
+                    </div>
+                </div>
+                <div class="detail-item-amt">− Rp {{ "{:,.0f}".format(data.potongan_salma) }}</div>
+            </div>
+            {% else %}
+            <div class="empty-detail">Tidak ada potongan bulan ini.</div>
+            {% endif %}
+
+            <!-- Subtotal Potongan -->
+            {% if data.potongan_salma and data.potongan_salma > 0 %}
+            <div class="subtotal-row potongan-total">
+                <span>Total Potongan</span>
+                <span>− Rp {{ "{:,.0f}".format(data.potongan_salma) }}</span>
+            </div>
+            {% endif %}
+
+            <!-- ════════════════════════════════
+                 KALKULASI AKHIR
+            ════════════════════════════════ -->
+            <div class="kalkulasi-box">
+                <div class="kalkulasi-row">
+                    <span class="k-lbl">Total Penghasilan</span>
+                    <span class="k-amt plus">Rp {{ "{:,.0f}".format(subtotal_penghasilan) }}</span>
+                </div>
+                <div class="kalkulasi-row">
+                    <span class="k-lbl">Total Potongan</span>
+                    <span class="k-amt minus">− Rp {{ "{:,.0f}".format(data.potongan_salma or 0) }}</span>
+                </div>
+                <div class="kalkulasi-row final">
+                    <span class="k-lbl">🧾 Total Transfer Bersih</span>
+                    <span class="k-amt">Rp {{ "{:,.0f}".format(data.total_gaji_salma) }}</span>
+                </div>
+            </div>
+
+            <!-- TOTAL BOX -->
+            <div class="total-box">
+                <div>
+                    <div class="total-label">Total Gaji Diterima</div>
+                    <div style="font-size:11px;opacity:.75;margin-top:2px">
+                        {{ bulan_nama[data.bulan_gaji_salma] }} {{ data.tahun_gaji_salma }}
+                    </div>
+                </div>
+                <div class="total-amount">Rp {{ "{:,.0f}".format(data.total_gaji_salma) }}</div>
+            </div>
+
+            <!-- REKENING TUJUAN -->
+            <div class="rekening-section">
+                <div>
+                    <div class="rekening-label">Rekening Tujuan Transfer</div>
+                    {% if data.no_rekening_salma %}
+                    <div class="rekening-bank">{{ data.nama_bank_salma }}</div>
+                    <div class="rekening-no">{{ data.no_rekening_salma }}</div>
+                    <div class="rekening-an">a/n {{ data.atas_nama_salma }}</div>
+                    {% else %}
+                    <div class="rekening-empty">Rekening belum diisi</div>
+                    {% endif %}
+                </div>
+                <div>
+                    {% if data.tanggal_pembayaran_salma %}
+                    <div class="rekening-label">Tanggal Transfer</div>
+                    <div style="font-size:14px;font-weight:600;color:var(--text)">
+                        {{ data.tanggal_pembayaran_salma }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- STATUS PEMBAYARAN -->
+            <div class="status-section">
+                {% if data.status_gaji_salma == 'sudah_dibayar' %}
+                <div class="status-paid">
+                    ✅ Gaji Sudah Dibayarkan
+                    {% if data.tanggal_pembayaran_salma %}pada {{ data.tanggal_pembayaran_salma }}{% endif %}
+                </div>
+                {% else %}
+                <div class="status-unpaid">⏳ Gaji Belum Dibayarkan</div>
+                {% endif %}
+            </div>
+
+        </div><!-- /slip-body -->
+
+        <!-- FOOTER -->
+        <div class="slip-footer">
+            <div class="slip-footer-note">
+                Dokumen ini digenerate otomatis oleh SistemGaji dan sah tanpa tanda tangan.
+            </div>
+            <div class="slip-footer-date">
+                Dicetak: {{ now.strftime('%d/%m/%Y') if now is defined else '' }}
+            </div>
+        </div>
+
+    </div><!-- /slip -->
+
+</body>
+
+</html>

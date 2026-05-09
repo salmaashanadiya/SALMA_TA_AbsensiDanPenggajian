@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Status Permintaan — SistemGaji</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue: #4f8cff;
+            --blue-dk: #2f5fd0;
+            --blue-soft: #eef4ff;
+            --text: #1a1d23;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --bg: #f5f7fb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 44px 40px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .08);
+        }
+
+        .logo-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 28px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: white
+        }
+
+        .logo-row span {
+            font-size: 14px;
+            font-weight: 700
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 24px
+        }
+
+        .form-group {
+            margin-bottom: 14px
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--text);
+            outline: none;
+            transition: .15s;
+            letter-spacing: 1px;
+        }
+
+        .form-group input:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(79, 140, 255, .1);
+        }
+
+        .btn-cek {
+            width: 100%;
+            padding: 11px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: .15s;
+        }
+
+        .btn-cek:hover {
+            background: var(--blue-dk)
+        }
+
+        /* RESULT */
+        .result-box {
+            margin-top: 20px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .result-header {
+            padding: 14px 16px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .result-header .tiket-id {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--muted);
+            font-family: monospace;
+        }
+
+        .status-badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .status-menunggu {
+            background: #fef3c7;
+            color: #92400e
+        }
+
+        .status-dibuka {
+            background: #e0f2fe;
+            color: #0369a1
+        }
+
+        .status-diproses {
+            background: #f3e8ff;
+            color: #7e22ce
+        }
+
+        .status-selesai {
+            background: #dcfce7;
+            color: #166534
+        }
+
+        .result-body {
+            padding: 16px
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0
+        }
+
+        .info-label {
+            color: var(--muted);
+            font-size: 12px;
+            flex-shrink: 0;
+            margin-right: 12px
+        }
+
+        .info-value {
+            font-weight: 500;
+            text-align: right
+        }
+
+        .progress-bar {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .progress-label {
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            margin-bottom: 10px;
+        }
+
+        .steps-track {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .step-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-dot.done {
+            background: var(--blue);
+            color: white
+        }
+
+        .step-dot.active {
+            background: var(--blue);
+            color: white;
+            box-shadow: 0 0 0 3px rgba(79, 140, 255, .2)
+        }
+
+        .step-line {
+            flex: 1;
+            height: 2px;
+            background: var(--border);
+        }
+
+        .step-line.done {
+            background: var(--blue)
+        }
+
+        .step-names {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+        }
+
+        .step-name {
+            font-size: 10px;
+            color: var(--muted);
+            text-align: center;
+            width: 28px;
+        }
+
+        .step-name.done,
+        .step-name.active {
+            color: var(--blue);
+            font-weight: 600
+        }
+
+        .catatan-box {
+            margin-top: 12px;
+            background: var(--blue-soft);
+            border: 1px solid #c7dcff;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 12px;
+            color: var(--blue-dk);
+            line-height: 1.5;
+        }
+
+        .catatan-box strong {
+            display: block;
+            margin-bottom: 2px
+        }
+
+        .not-found {
+            margin-top: 20px;
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 14px 16px;
+            font-size: 13px;
+            color: #991b1b;
+            display: flex;
+            gap: 8px;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            font-size: 12px;
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: var(--blue)
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="logo-row">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+                </svg>
+            </div>
+            <span>SistemGaji</span>
+        </div>
+
+        <h2>Cek Status Permintaan</h2>
+        <p class="subtitle">Masukkan kode tiket yang kamu terima setelah mengirim permintaan</p>
+
+        <form method="GET" action="/cek_status_request">
+            <div class="form-group">
+                <label>Kode Tiket</label>
+                <input type="text" name="kode" placeholder="Contoh: TKT-20260423-001" value="{{ kode or '' }}"
+                    autocomplete="off" style="text-transform:uppercase">
+            </div>
+            <button type="submit" class="btn-cek">🔍 Cek Status</button>
+        </form>
+
+        {% if request_data %}
+        {% set status = request_data.status_request %}
+
+        {% set status_map = {
+        'menunggu': ('Menunggu', 'status-menunggu', 1),
+        'dibuka': ('Dibuka Admin', 'status-dibuka', 2),
+        'diproses': ('Sedang Diproses', 'status-diproses', 3),
+        'selesai': ('Selesai', 'status-selesai', 4)
+        } %}
+
+        {% set s = status_map.get(status, ('Menunggu', 'status-menunggu', 1)) %}
+
+        <div class="result-box">
+            <div class="result-header">
+                <span class="tiket-id">{{ request_data.kode_tiket }}</span>
+                <span class="status-badge {{ s[1] }}">{{ s[0] }}</span>
+            </div>
+            <div class="result-body">
+                <div class="info-row">
+                    <span class="info-label">Nama</span>
+                    <span class="info-value">{{ request_data.nama }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Jabatan</span>
+                    <span class="info-value">{{ request_data.jabatan }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Jenis</span>
+                    <span class="info-value">
+                        {% if request_data.jenis_request == 'belum_akun' %}👤 Pembuatan Akun
+                        {% else %}🔑 Reset Password{% endif %}
+                    </span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Dikirim</span>
+                    <span class="info-value">{{ request_data.created_at.strftime('%d %b %Y, %H:%M') if
+                        request_data.created_at else '—' }}</span>
+                </div>
+
+                <!-- Progress Track -->
+                <div class="progress-bar">
+                    <div class="progress-label">Progress</div>
+                    <div class="steps-track">
+                        <div class="step-dot {{ 'done' if s[2] >= 1 else '' }}">✓</div>
+                        <div class="step-line {{ 'done' if s[2] >= 2 else '' }}"></div>
+                        <div class="step-dot {{ 'active' if s[2] == 2 else ('done' if s[2] > 2 else '') }}">👁</div>
+                        <div class="step-line {{ 'done' if s[2] >= 3 else '' }}"></div>
+                        <div class="step-dot {{ 'active' if s[2] == 3 else ('done' if s[2] > 3 else '') }}">⚙</div>
+                        <div class="step-line {{ 'done' if s[2] >= 4 else '' }}"></div>
+                        <div class="step-dot {{ 'active' if s[2] == 4 else '' }}">✅</div>
+                    </div>
+                    <div class="step-names">
+                        <span class="step-name done">Terkirim</span>
+                        <span class="step-name {{ 'done' if s[2] >= 2 else '' }}">Dibuka</span>
+                        <span class="step-name {{ 'done' if s[2] >= 3 else '' }}">Proses</span>
+                        <span class="step-name {{ 'done' if s[2] >= 4 else '' }}">Selesai</span>
+                    </div>
+                </div>
+
+                {% if request_data.catatan_admin %}
+                <div class="catatan-box">
+                    <strong>💬 Catatan dari Admin:</strong>
+                    {{ request_data.catatan_admin }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% elif kode and not request_data %}
+        <div class="not-found">
+            ❌ Kode tiket tidak ditemukan. Pastikan kamu memasukkan kode yang benar.
+        </div>
+        {% endif %}
+
+        <a href="/karyawan/hubungi_admin" class="back-link">← Kembali kirim permintaan baru</a>
+    </div>
+</body>
+
+</html>

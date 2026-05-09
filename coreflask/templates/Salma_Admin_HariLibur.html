@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hari Libur</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue: #4f8cff;
+            --blue-dk: #2f5fd0;
+            --blue-soft: #eef4ff;
+            --sidebar-w: 248px;
+            --header-h: 64px;
+            --radius: 14px;
+            --text: #1a1d23;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --card: #fff;
+            --bg: #f5f7fb
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: white;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            overflow-y: auto
+        }
+
+        .sidebar-logo {
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .logo-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: white
+        }
+
+        .sidebar-logo span {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .sidebar-admin {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fef3c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 8px
+        }
+
+        .sidebar-admin p {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .sidebar-admin span {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        nav {
+            padding: 12px;
+            flex: 1
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .8px;
+            color: var(--muted);
+            text-transform: uppercase;
+            padding: 8px 8px 4px
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
+            transition: .15s;
+            margin-bottom: 2px
+        }
+
+        .nav-item:hover {
+            background: var(--blue-soft);
+            color: var(--blue-dk)
+        }
+
+        .nav-item.active {
+            background: var(--blue-soft);
+            color: var(--blue);
+            font-weight: 600
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0
+        }
+
+        .sidebar-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border)
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: #e53935;
+            font-size: 13px;
+            font-weight: 500;
+            width: 100%;
+            transition: .15s
+        }
+
+        .logout-btn:hover {
+            background: #fff5f5
+        }
+
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column
+        }
+
+        .topbar {
+            height: var(--header-h);
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 50
+        }
+
+        .topbar-left h2 {
+            font-size: 16px;
+            font-weight: 600
+        }
+
+        .topbar-left p {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .date-chip {
+            background: var(--blue-soft);
+            color: var(--blue-dk);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500
+        }
+
+        .content {
+            padding: 24px 28px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start
+        }
+
+        .col-left {
+            flex: 1
+        }
+
+        .col-right {
+            width: 280px;
+            flex-shrink: 0
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 18px;
+            overflow: hidden
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .card-sub {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px
+        }
+
+        .card-body {
+            padding: 20px
+        }
+
+        .filter-row {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            align-items: center
+        }
+
+        .filter-input {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--text);
+            outline: none;
+            background: white;
+            width: 100px
+        }
+
+        .btn-filter {
+            padding: 8px 16px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit
+        }
+
+        .table-wrap {
+            overflow-x: auto
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        thead tr {
+            background: var(--bg)
+        }
+
+        th {
+            padding: 11px 16px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        td {
+            padding: 12px 16px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text)
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none
+        }
+
+        tbody tr:hover {
+            background: #fafbfd
+        }
+
+        .form-group {
+            margin-bottom: 14px
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            margin-bottom: 6px
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--text);
+            outline: none;
+            transition: .15s;
+            background: white
+        }
+
+        .form-group input:focus {
+            border-color: var(--blue)
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit
+        }
+
+        .btn-primary:hover {
+            background: var(--blue-dk)
+        }
+
+        .btn-hapus {
+            padding: 5px 10px;
+            background: #fee2e2;
+            color: #991b1b;
+            border: none;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none
+        }
+
+        .btn-hapus:hover {
+            background: #fecaca
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .empty-row td {
+            text-align: center;
+            color: var(--muted);
+            padding: 32px
+        }
+
+        .hari-nama {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px
+        }
+
+        @media(max-width:900px) {
+            .content {
+                flex-direction: column
+            }
+
+            .col-right {
+                width: 100%
+            }
+        }
+
+        @media(max-width:768px) {
+            .sidebar {
+                display: none
+            }
+
+            .main {
+                margin-left: 0
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon"><svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+                </svg></div><span>SistemGaji</span>
+        </div>
+        <div class="sidebar-admin">
+            <div class="admin-avatar">AD</div>
+            <p>Administrator</p><span>Admin Sistem</span>
+        </div>
+        <nav>
+            <div class="nav-label">Menu</div>
+            <a href="/admin/dashboard" class="nav-item"><span class="nav-icon">📊</span>Dashboard</a>
+            <a href="/admin/absensi" class="nav-item"><span class="nav-icon">📅</span>Kelola Absensi</a>
+            <a href="/admin/izin" class="nav-item"><span class="nav-icon">📋</span>Kelola Izin</a>
+            <a href="/admin/pembayaran" class="nav-item"><span class="nav-icon">💳</span>Pembayaran Gaji</a>
+            <a href="/admin/jabatan" class="nav-item"><span class="nav-icon">🏢</span>Kelola Jabatan</a>
+            <a href="/admin/hari_libur" class="nav-item active"><span class="nav-icon">🗓</span>Hari Libur</a>
+            <a href="/admin/laporan" class="nav-item"><span class="nav-icon">📈</span>Laporan Absensi</a>
+        </nav>
+        <div class="sidebar-footer"><a href="/logout" class="logout-btn"><span>🚪</span> Keluar</a></div>
+    </aside>
+
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <h2>Hari Libur Nasional</h2>
+                <p>Kelola daftar hari libur tahun {{ tahun }}</p>
+            </div>
+            <span class="date-chip">{{ tanggal_str }}</span>
+        </div>
+        <div class="content">
+
+            <div class="col-left">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}{% for cat,msg in messages %}<div class="alert-success">✅ {{ msg }}</div>{% endfor %}{%
+                endif %}
+                {% endwith %}
+
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Daftar Hari Libur {{ tahun }}</div>
+                            <div class="card-sub">{{ libur_list|length }} hari libur</div>
+                        </div>
+                    </div>
+                    <form method="GET" class="filter-row">
+                        <input type="number" name="tahun" value="{{ tahun }}" class="filter-input">
+                        <button type="submit" class="btn-filter">Tampilkan</button>
+                    </form>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Tanggal</th>
+                                    <th>Keterangan</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if libur_list %}
+                                {% set hari = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'] %}
+                                {% for l in libur_list %}
+                                <tr>
+                                    <td style="color:var(--muted)">{{ loop.index }}</td>
+                                    <td>
+                                        <div style="font-weight:500">{{ l.tanggal_libur_salma.strftime('%d %B %Y') if
+                                            l.tanggal_libur_salma else '—' }}</div>
+                                        <div class="hari-nama">{{ hari[l.tanggal_libur_salma.weekday()] if
+                                            l.tanggal_libur_salma else '' }}</div>
+                                    </td>
+                                    <td>{{ l.keterangan_libur_salma }}</td>
+                                    <td>
+                                        <a href="/admin/hari_libur/hapus/{{ l.id_libur_salma }}" class="btn-hapus"
+                                            onclick="return confirm('Hapus hari libur ini?')">🗑 Hapus</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% else %}
+                                <tr class="empty-row">
+                                    <td colspan="4">Belum ada data hari libur {{ tahun }}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-right">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Tambah Hari Libur</div>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="/admin/hari_libur/tambah">
+                            <div class="form-group">
+                                <label>Tanggal</label>
+                                <input type="date" name="tanggal" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Keterangan</label>
+                                <input type="text" name="keterangan" placeholder="contoh: Hari Raya Idul Fitri"
+                                    required>
+                            </div>
+                            <button type="submit" class="btn-primary">+ Tambah</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">💡 Info</div>
+                    </div>
+                    <div class="card-body">
+                        <p style="font-size:12px;color:var(--muted);line-height:1.7">
+                            Hari libur digunakan sebagai referensi. Gaji tetap dihitung berdasarkan <strong>hari
+                                hadir</strong> yang tercatat di absensi.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

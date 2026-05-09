@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Jabatan — Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue: #4f8cff;
+            --blue-dk: #2f5fd0;
+            --blue-soft: #eef4ff;
+            --sidebar-w: 248px;
+            --header-h: 64px;
+            --radius: 14px;
+            --text: #1a1d23;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --card: #fff;
+            --bg: #f5f7fb
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: white;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100
+        }
+
+        .sidebar-logo {
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .logo-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: white
+        }
+
+        .sidebar-logo span {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .sidebar-admin {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fef3c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 8px
+        }
+
+        .sidebar-admin p {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .sidebar-admin span {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        nav {
+            padding: 12px;
+            flex: 1
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .8px;
+            color: var(--muted);
+            text-transform: uppercase;
+            padding: 8px 8px 4px
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
+            transition: .15s;
+            margin-bottom: 2px
+        }
+
+        .nav-item:hover {
+            background: var(--blue-soft);
+            color: var(--blue-dk)
+        }
+
+        .nav-item.active {
+            background: var(--blue-soft);
+            color: var(--blue);
+            font-weight: 600
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0
+        }
+
+        .sidebar-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border)
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: #e53935;
+            font-size: 13px;
+            font-weight: 500;
+            width: 100%;
+            transition: .15s
+        }
+
+        .logout-btn:hover {
+            background: #fff5f5
+        }
+
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column
+        }
+
+        .topbar {
+            height: var(--header-h);
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 50
+        }
+
+        .topbar-left h2 {
+            font-size: 16px;
+            font-weight: 600
+        }
+
+        .topbar-left p {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .date-chip {
+            background: var(--blue-soft);
+            color: var(--blue-dk);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500
+        }
+
+        .content {
+            padding: 24px 28px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start
+        }
+
+        .col-left {
+            flex: 1
+        }
+
+        .col-right {
+            width: 320px;
+            flex-shrink: 0
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 18px;
+            overflow: hidden
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .card-sub {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px
+        }
+
+        .card-body {
+            padding: 20px
+        }
+
+        /* ── JABATAN ITEM ── */
+        .jabatan-item {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            background: var(--bg)
+        }
+
+        .jabatan-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 10px
+        }
+
+        .jabatan-detail {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap
+        }
+
+        .jd-box {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            min-width: 90px
+        }
+
+        .jd-box .lbl {
+            color: var(--muted);
+            margin-bottom: 2px;
+            font-size: 11px
+        }
+
+        .jd-box .val {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 12px
+        }
+
+        /* ── LIMIT BADGE ROW ── */
+        .limit-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px
+        }
+
+        .limit-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .limit-badge.izin {
+            background: #fef3c7;
+            color: #92400e
+        }
+
+        .limit-badge.sakit {
+            background: #e0f2fe;
+            color: #0369a1
+        }
+
+        .limit-badge.cuti {
+            background: #f3e8ff;
+            color: #7e22ce
+        }
+
+        .limit-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%
+        }
+
+        .limit-badge.izin .dot {
+            background: #f59e0b
+        }
+
+        .limit-badge.sakit .dot {
+            background: #38bdf8
+        }
+
+        .limit-badge.cuti .dot {
+            background: #a78bfa
+        }
+
+        /* ── DETAILS / EDIT FORM ── */
+        details summary {
+            font-size: 12px;
+            color: var(--blue);
+            cursor: pointer;
+            font-weight: 500;
+            list-style: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 12px;
+            background: var(--blue-soft);
+            border-radius: 7px;
+            transition: .15s
+        }
+
+        details summary::-webkit-details-marker {
+            display: none
+        }
+
+        details summary:hover {
+            background: #dbeafe;
+            color: var(--blue-dk)
+        }
+
+        details[open] summary {
+            margin-bottom: 12px
+        }
+
+        .form-group {
+            margin-bottom: 12px
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            margin-bottom: 5px
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--text);
+            outline: none;
+            transition: .15s;
+            background: white
+        }
+
+        .form-group input:focus {
+            border-color: var(--blue)
+        }
+
+        /* ── LIMIT INPUT GROUP ── */
+        .limit-section {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 12px
+        }
+
+        .limit-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px
+        }
+
+        .limit-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px
+        }
+
+        .limit-grid .form-group {
+            margin-bottom: 0
+        }
+
+        .limit-grid input {
+            text-align: center;
+            font-weight: 600
+        }
+
+        .limit-hint {
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 6px;
+            font-style: italic
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+        .btn-primary {
+            padding: 8px 16px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: .15s
+        }
+
+        .btn-primary:hover {
+            background: var(--blue-dk)
+        }
+
+        .btn-primary.full {
+            width: 100%;
+            padding: 10px
+        }
+
+        .btn-danger {
+            padding: 8px 14px;
+            background: #fee2e2;
+            color: #991b1b;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: none;
+            transition: .15s
+        }
+
+        .btn-danger:hover {
+            background: #fecaca
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .section-divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 12px 0
+        }
+
+        .form-section-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 10px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px
+        }
+
+        @media(max-width:900px) {
+            .content {
+                flex-direction: column
+            }
+
+            .col-right {
+                width: 100%
+            }
+        }
+
+        @media(max-width:768px) {
+            .sidebar {
+                display: none
+            }
+
+            .main {
+                margin-left: 0
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon"><svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+                </svg></div><span>SistemGaji</span>
+        </div>
+        <div class="sidebar-admin">
+            <div class="admin-avatar">AD</div>
+            <p>Administrator</p><span>Admin Sistem</span>
+        </div>
+        <nav>
+            <div class="nav-label">Menu</div>
+            <a href="/admin/dashboard" class="nav-item"><span class="nav-icon">📊</span>Dashboard</a>
+            <a href="/admin/absensi" class="nav-item"><span class="nav-icon">📅</span>Kelola Absensi</a>
+            <a href="/admin/izin" class="nav-item"><span class="nav-icon">📋</span>Kelola Izin</a>
+            <a href="/admin/jabatan" class="nav-item active"><span class="nav-icon">🏢</span>Kelola Jabatan</a>
+        </nav>
+        <div class="sidebar-footer"><a href="/logout" class="logout-btn"><span>🚪</span> Keluar</a></div>
+    </aside>
+
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <h2>Kelola Jabatan</h2>
+                <p>Atur jabatan, gaji per hari, tunjangan, dan limit kuota izin</p>
+            </div>
+            <span class="date-chip">{{ tanggal_str }}</span>
+        </div>
+
+        <div class="content">
+
+            <!-- ═══════════════════════════════════════════
+                 KIRI — DAFTAR JABATAN
+            ════════════════════════════════════════════ -->
+            <div class="col-left">
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}{% for cat, msg in messages %}
+                <div class="alert-success">✅ {{ msg }}</div>
+                {% endfor %}{% endif %}
+                {% endwith %}
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Daftar Jabatan</div>
+                        <div class="card-sub">{{ jabatan_list|length }} jabatan terdaftar</div>
+                    </div>
+                    <div class="card-body">
+                        {% if jabatan_list %}
+                        {% for j in jabatan_list %}
+                        <div class="jabatan-item">
+
+                            <!-- Nama -->
+                            <div class="jabatan-name">🏢 {{ j.nama_jabatan_salma }}</div>
+
+                            <!-- Gaji & Tunjangan -->
+                            <div class="jabatan-detail">
+                                <div class="jd-box">
+                                    <div class="lbl">Gaji/Hari</div>
+                                    <div class="val">Rp {{ "{:,.0f}".format(j.gaji_per_hari_salma) }}</div>
+                                </div>
+                                <div class="jd-box">
+                                    <div class="lbl">Tunjangan</div>
+                                    <div class="val">Rp {{ "{:,.0f}".format(j.tunjangan_salma) }}</div>
+                                </div>
+                            </div>
+
+                            <!-- Limit Badge -->
+                            <div class="limit-row">
+                                <span class="limit-badge izin">
+                                    <span class="dot"></span>
+                                    Izin {{ j.limit_izin_salma or 2 }} hr/bln
+                                </span>
+                                <span class="limit-badge sakit">
+                                    <span class="dot"></span>
+                                    Sakit {{ j.limit_sakit_salma or 3 }} hr/bln
+                                </span>
+                                <span class="limit-badge cuti">
+                                    <span class="dot"></span>
+                                    Cuti {{ j.limit_cuti_salma or 12 }} hr/thn
+                                </span>
+                            </div>
+
+                            <!-- Tombol aksi -->
+                            <div class="btn-row">
+                                <details>
+                                    <summary>✏️ Edit</summary>
+                                    <form method="POST" action="/admin/jabatan/edit/{{ j.id_jabatan_salma }}">
+
+                                        <!-- Info dasar -->
+                                        <div class="form-section-label">💼 Informasi Dasar</div>
+                                        <div class="form-group">
+                                            <label>Nama Jabatan</label>
+                                            <input name="nama" value="{{ j.nama_jabatan_salma }}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Gaji Per Hari (Rp)</label>
+                                            <input type="number" name="gaji_per_hari"
+                                                value="{{ j.gaji_per_hari_salma }}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Tunjangan (Rp)</label>
+                                            <input type="number" name="tunjangan" value="{{ j.tunjangan_salma }}"
+                                                required>
+                                        </div>
+
+                                        <hr class="section-divider">
+
+                                        <!-- Limit kuota izin -->
+                                        <div class="limit-section">
+                                            <div class="limit-section-title">🚦 Batas Kuota Izin</div>
+                                            <div class="limit-grid">
+                                                <div class="form-group">
+                                                    <label>Izin / bln</label>
+                                                    <input type="number" name="limit_izin" min="0" max="31"
+                                                        value="{{ j.limit_izin_salma or 2 }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Sakit / bln</label>
+                                                    <input type="number" name="limit_sakit" min="0" max="31"
+                                                        value="{{ j.limit_sakit_salma or 3 }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Cuti / thn</label>
+                                                    <input type="number" name="limit_cuti" min="0" max="365"
+                                                        value="{{ j.limit_cuti_salma or 12 }}" required>
+                                                </div>
+                                            </div>
+                                            <div class="limit-hint">
+                                                Izin &amp; Sakit dihitung per bulan · Cuti dihitung per tahun
+                                            </div>
+                                        </div>
+
+                                        <div class="btn-row">
+                                            <button type="submit" class="btn-primary">💾 Simpan</button>
+                                        </div>
+                                    </form>
+                                </details>
+
+                                <a href="/admin/jabatan/hapus/{{ j.id_jabatan_salma }}" class="btn-danger"
+                                    onclick="return confirm('Hapus jabatan {{ j.nama_jabatan_salma }}?')">
+                                    🗑 Hapus
+                                </a>
+                            </div>
+
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <p style="color:var(--muted);text-align:center;padding:24px">Belum ada jabatan</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════
+                 KANAN — FORM TAMBAH JABATAN
+            ════════════════════════════════════════════ -->
+            <div class="col-right">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Tambah Jabatan Baru</div>
+                        <div class="card-sub">Isi info jabatan beserta kuota izin</div>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="/admin/jabatan/tambah">
+
+                            <!-- Info dasar -->
+                            <div class="form-section-label">💼 Informasi Dasar</div>
+                            <div class="form-group">
+                                <label>Nama Jabatan</label>
+                                <input name="nama" placeholder="contoh: HRD" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Gaji Per Hari (Rp)</label>
+                                <input type="number" name="gaji_per_hari" placeholder="200000" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Tunjangan (Rp)</label>
+                                <input type="number" name="tunjangan" placeholder="500000" value="0">
+                            </div>
+
+                            <hr class="section-divider">
+
+                            <!-- Limit kuota izin -->
+                            <div class="limit-section">
+                                <div class="limit-section-title">🚦 Batas Kuota Izin</div>
+                                <div class="limit-grid">
+                                    <div class="form-group">
+                                        <label>Izin / bln</label>
+                                        <input type="number" name="limit_izin" min="0" max="31" value="2" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Sakit / bln</label>
+                                        <input type="number" name="limit_sakit" min="0" max="31" value="3" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Cuti / thn</label>
+                                        <input type="number" name="limit_cuti" min="0" max="365" value="12" required>
+                                    </div>
+                                </div>
+                                <div class="limit-hint">
+                                    Izin &amp; Sakit dihitung per bulan · Cuti dihitung per tahun.
+                                    Isi 0 untuk tidak membatasi.
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-primary full">+ Tambah Jabatan</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

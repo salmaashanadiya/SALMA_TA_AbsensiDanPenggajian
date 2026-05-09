@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hubungi Admin — SistemGaji</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue: #4f8cff;
+            --blue-dk: #2f5fd0;
+            --blue-soft: #eef4ff;
+            --text: #1a1d23;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --bg: #f5f7fb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 860px;
+            background: white;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .08);
+        }
+
+        /* LEFT */
+        .left {
+            flex: 1;
+            background: linear-gradient(145deg, var(--blue), var(--blue-dk));
+            padding: 48px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, .2);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: white
+        }
+
+        .brand-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .left-mid {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px 0 20px;
+        }
+
+        .left-mid h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: white;
+            line-height: 1.3;
+            margin-bottom: 12px;
+        }
+
+        .left-mid p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, .75);
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .step-num {
+            width: 26px;
+            height: 26px;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, .2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+            margin-top: 1px;
+        }
+
+        .step-text {
+            font-size: 13px;
+            color: rgba(255, 255, 255, .85);
+            line-height: 1.5;
+        }
+
+        .step-text strong {
+            color: white;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .left-footer {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .4);
+        }
+
+        /* RIGHT */
+        .right {
+            width: 400px;
+            flex-shrink: 0;
+            padding: 48px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .right h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        /* Cek status */
+        .cek-status-box {
+            background: var(--blue-soft);
+            border: 1px solid #c7dcff;
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cek-status-box span {
+            font-size: 20px
+        }
+
+        .cek-status-box div p {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--blue-dk);
+            margin-bottom: 2px;
+        }
+
+        .cek-status-box div a {
+            font-size: 12px;
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .cek-status-box div a:hover {
+            text-decoration: underline
+        }
+
+        /* SUCCESS ALERT */
+        .alert-success {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            line-height: 1.5;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            line-height: 1.5;
+        }
+
+        /* FORM */
+        .form-group {
+            margin-bottom: 14px
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 13px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--text);
+            outline: none;
+            transition: .15s;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(79, 140, 255, .1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 72px
+        }
+
+        .jenis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .jenis-option {
+            border: 1.5px solid var(--border);
+            border-radius: 9px;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: .15s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .jenis-option:hover {
+            border-color: var(--blue);
+            background: var(--blue-soft)
+        }
+
+        .jenis-option.selected {
+            border-color: var(--blue);
+            background: var(--blue-soft)
+        }
+
+        .jenis-option input[type="radio"] {
+            display: none
+        }
+
+        .jenis-icon {
+            font-size: 18px
+        }
+
+        .jenis-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.3
+        }
+
+        .jenis-desc {
+            font-size: 10px;
+            color: var(--muted)
+        }
+
+        .username-field {
+            display: none
+        }
+
+        .username-field.show {
+            display: block
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 11px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: .15s;
+            margin-top: 4px;
+        }
+
+        .btn-submit:hover {
+            background: var(--blue-dk)
+        }
+
+        .btn-submit:active {
+            transform: scale(.98)
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 14px;
+            font-size: 12px;
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: var(--blue)
+        }
+
+        @media(max-width: 768px) {
+            .wrapper {
+                flex-direction: column
+            }
+
+            .left {
+                padding: 32px 28px
+            }
+
+            .left-mid p,
+            .steps {
+                display: none
+            }
+
+            .right {
+                width: 100%;
+                padding: 32px 28px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- LEFT -->
+        <div class="left">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+                    </svg>
+                </div>
+                <span class="brand-name">SistemGaji</span>
+            </div>
+
+            <div class="left-mid">
+                <h1>Butuh Bantuan Akun?</h1>
+                <p>Kirim permintaan ke admin dan pantau statusnya langsung dari sini.</p>
+
+                <div class="steps">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div class="step-text">
+                            <strong>Isi formulir</strong>
+                            Pilih jenis permintaan dan lengkapi data diri kamu
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div class="step-text">
+                            <strong>Admin menerima notifikasi</strong>
+                            Permintaan masuk ke dashboard admin secara real-time
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div class="step-text">
+                            <strong>Pantau status</strong>
+                            Gunakan kode tiket untuk cek perkembangan permintaanmu
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">4</div>
+                        <div class="step-text">
+                            <strong>Selesai</strong>
+                            Admin akan menyelesaikan dan menandai permintaanmu
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="left-footer">© 2026 SistemGaji. All rights reserved.</div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="right">
+            <h2>Hubungi Admin</h2>
+            <p class="subtitle">Isi data dengan lengkap agar admin bisa memproses lebih cepat</p>
+
+            <div class="cek-status-box">
+                <span>🔍</span>
+                <div>
+                    <p>Sudah pernah kirim permintaan?</p>
+                    <a href="/cek_status_request">Cek status tiket kamu →</a>
+                </div>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}{% for cat, msg in messages %}
+            <div class="alert-{{ 'success' if cat == 'success' else 'error' }}">
+                {{ '✅' if cat == 'success' else '⚠️' }} {{ msg }}
+            </div>
+            {% endfor %}{% endif %}
+            {% endwith %}
+
+            <form method="POST" action="/karyawan/kirim_request">
+
+                <!-- Jenis Request -->
+                <div class="form-group">
+                    <label>Jenis Permintaan</label>
+                    <div class="jenis-grid">
+                        <label class="jenis-option selected" id="opt-belum" onclick="pilihJenis('belum_akun')">
+                            <input type="radio" name="jenis" value="belum_akun" checked>
+                            <span class="jenis-icon">👤</span>
+                            <div>
+                                <div class="jenis-label">Belum punya akun</div>
+                                <div class="jenis-desc">Daftarkan ke sistem</div>
+                            </div>
+                        </label>
+                        <label class="jenis-option" id="opt-lupa" onclick="pilihJenis('lupa_password')">
+                            <input type="radio" name="jenis" value="lupa_password">
+                            <span class="jenis-icon">🔑</span>
+                            <div>
+                                <div class="jenis-label">Lupa password</div>
+                                <div class="jenis-desc">Reset akun lama</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" name="nama" placeholder="Masukkan nama lengkap" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Jabatan / Posisi</label>
+                    <input type="text" name="jabatan" placeholder="Contoh: Staff Keuangan, Manajer HRD..." required>
+                </div>
+
+                <div class="form-group">
+                    <label>Nama Bank</label>
+                    <input type="text" name="nama_bank" placeholder="Contoh: BCA, BRI, Mandiri, BNI...">
+                </div>
+
+                <div class="form-group">
+                    <label>Nomor Rekening</label>
+                    <input type="text" name="no_rekening" placeholder="Masukkan nomor rekening">
+                </div>
+
+                <div class="form-group">
+                    <label>Atas Nama Rekening</label>
+                    <input type="text" name="atas_nama_rekening" placeholder="Nama sesuai buku tabungan">
+                </div>
+
+                <div class="form-group username-field" id="usernameField">
+                    <label>Username Akun</label>
+                    <input type="text" name="username" placeholder="Masukkan username yang lupa passwordnya">
+                </div>
+
+                <div class="form-group">
+                    <label>Pesan Tambahan (opsional)</label>
+                    <textarea name="pesan_tambahan"
+                        placeholder="Informasi lain yang perlu diketahui admin..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">📨 Kirim Permintaan</button>
+            </form>
+
+            <a href="/" class="back-link">← Kembali ke halaman login</a>
+        </div>
+    </div>
+
+    <script>
+        function pilihJenis(jenis) {
+            document.querySelectorAll('.jenis-option').forEach(el => el.classList.remove('selected'));
+            document.getElementById('opt-' + (jenis === 'belum_akun' ? 'belum' : 'lupa')).classList.add('selected');
+
+            const usernameField = document.getElementById('usernameField');
+            const usernameInput = usernameField.querySelector('input');
+
+            if (jenis === 'lupa_password') {
+                usernameField.classList.add('show');
+                usernameInput.setAttribute('required', '');
+            } else {
+                usernameField.classList.remove('show');
+                usernameInput.removeAttribute('required');
+            }
+
+            // update radio
+            document.querySelectorAll('input[name="jenis"]').forEach(r => r.checked = false);
+            document.querySelector(`input[value="${jenis}"]`).checked = true;
+        }
+    </script>
+</body>
+
+</html>

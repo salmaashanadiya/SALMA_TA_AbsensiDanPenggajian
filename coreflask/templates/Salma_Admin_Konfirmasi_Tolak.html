@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfirmasi Penolakan Izin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue: #4f8cff;
+            --blue-dk: #2f5fd0;
+            --blue-soft: #eef4ff;
+            --sidebar-w: 248px;
+            --header-h: 64px;
+            --radius: 14px;
+            --text: #1a1d23;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --card: #fff;
+            --bg: #f5f7fb;
+            --red: #ef4444;
+            --red-dk: #dc2626;
+            --red-soft: #fff5f5
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: white;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100
+        }
+
+        .sidebar-logo {
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .logo-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: white
+        }
+
+        .sidebar-logo span {
+            font-size: 14px;
+            font-weight: 600
+        }
+
+        .sidebar-admin {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fef3c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 8px
+        }
+
+        .sidebar-admin p {
+            font-size: 13px;
+            font-weight: 600
+        }
+
+        .sidebar-admin span {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        nav {
+            padding: 12px;
+            flex: 1
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .8px;
+            color: var(--muted);
+            text-transform: uppercase;
+            padding: 8px 8px 4px
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
+            transition: .15s;
+            margin-bottom: 2px
+        }
+
+        .nav-item:hover {
+            background: var(--blue-soft);
+            color: var(--blue-dk)
+        }
+
+        .nav-item.active {
+            background: var(--blue-soft);
+            color: var(--blue);
+            font-weight: 600
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0
+        }
+
+        .sidebar-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border)
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: #e53935;
+            font-size: 13px;
+            font-weight: 500;
+            width: 100%;
+            transition: .15s
+        }
+
+        .logout-btn:hover {
+            background: #fff5f5
+        }
+
+        /* MAIN */
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column
+        }
+
+        .topbar {
+            height: var(--header-h);
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 28px;
+            gap: 10px
+        }
+
+        .topbar a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 13px
+        }
+
+        .topbar a:hover {
+            color: var(--blue)
+        }
+
+        .topbar-sep {
+            color: var(--border)
+        }
+
+        .topbar-current {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        /* KONTEN UTAMA */
+        .content {
+            padding: 32px 28px;
+            display: flex;
+            justify-content: center
+        }
+
+        .confirm-wrap {
+            width: 100%;
+            max-width: 560px
+        }
+
+        /* HEADER CARD MERAH */
+        .confirm-header {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            border-radius: var(--radius) var(--radius) 0 0;
+            padding: 28px 28px 24px;
+            color: white
+        }
+
+        .confirm-icon {
+            width: 52px;
+            height: 52px;
+            background: rgba(255, 255, 255, .2);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 14px
+        }
+
+        .confirm-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px
+        }
+
+        .confirm-header p {
+            font-size: 13px;
+            opacity: .85;
+            line-height: 1.5
+        }
+
+        /* INFO PENGAJUAN */
+        .confirm-body {
+            background: white;
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 var(--radius) var(--radius);
+            padding: 24px 28px
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px
+        }
+
+        .info-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            margin-bottom: 3px
+        }
+
+        .info-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .info-value.jenis-izin {
+            color: #92400e
+        }
+
+        .info-value.jenis-sakit {
+            color: #0369a1
+        }
+
+        .info-value.jenis-cuti {
+            color: #7e22ce
+        }
+
+        /* FORM ALASAN */
+        .form-section {
+            margin-bottom: 24px
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px
+        }
+
+        .form-label .required {
+            color: var(--red)
+        }
+
+        .form-hint {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 8px;
+            line-height: 1.5
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--text);
+            resize: vertical;
+            min-height: 110px;
+            outline: none;
+            transition: .15s;
+            background: white;
+            line-height: 1.6
+        }
+
+        .form-textarea:focus {
+            border-color: var(--red)
+        }
+
+        .form-textarea::placeholder {
+            color: #adb5bd
+        }
+
+        /* ERROR */
+        .error-box {
+            background: #fff5f5;
+            border: 1px solid #fecaca;
+            border-radius: 9px;
+            padding: 10px 14px;
+            font-size: 12px;
+            color: #991b1b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px
+        }
+
+        /* TOMBOL */
+        .btn-row {
+            display: flex;
+            gap: 10px
+        }
+
+        .btn-batal {
+            flex: 1;
+            padding: 11px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: .15s
+        }
+
+        .btn-batal:hover {
+            background: var(--bg);
+            color: var(--text)
+        }
+
+        .btn-tolak-konfirm {
+            flex: 2;
+            padding: 11px;
+            border: none;
+            border-radius: 10px;
+            background: var(--red);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: .15s
+        }
+
+        .btn-tolak-konfirm:hover {
+            background: var(--red-dk)
+        }
+
+        /* CATATAN BAWAH */
+        .note-box {
+            margin-top: 16px;
+            background: #fef3c7;
+            border: 1px solid #fde68a;
+            border-radius: 9px;
+            padding: 10px 14px;
+            font-size: 12px;
+            color: #92400e;
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            line-height: 1.5
+        }
+
+        .note-icon {
+            flex-shrink: 0;
+            font-size: 14px
+        }
+
+        @media(max-width:768px) {
+            .sidebar {
+                display: none
+            }
+
+            .main {
+                margin-left: 0
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon"><svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+                </svg></div>
+            <span>SistemGaji</span>
+        </div>
+        <div class="sidebar-admin">
+            <div class="admin-avatar">AD</div>
+            <p>Administrator</p><span>Admin Sistem</span>
+        </div>
+        <nav>
+            <div class="nav-label">Menu</div>
+            <a href="/admin/dashboard" class="nav-item"><span class="nav-icon">📊</span>Dashboard</a>
+            <a href="/admin/absensi" class="nav-item"><span class="nav-icon">📅</span>Kelola Absensi</a>
+            <a href="/admin/izin" class="nav-item active"><span class="nav-icon">📋</span>Kelola Izin</a>
+            <a href="/admin/pembayaran" class="nav-item"><span class="nav-icon">💳</span>Pembayaran Gaji</a>
+            <a href="/admin/jabatan" class="nav-item"><span class="nav-icon">🏢</span>Kelola Jabatan</a>
+        </nav>
+        <div class="sidebar-footer"><a href="/logout" class="logout-btn"><span>🚪</span> Keluar</a></div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+        <div class="topbar">
+            <a href="/admin/izin">Kelola Izin</a>
+            <span class="topbar-sep">/</span>
+            <span class="topbar-current">Konfirmasi Penolakan</span>
+        </div>
+
+        <div class="content">
+            <div class="confirm-wrap">
+
+                <!-- HEADER MERAH -->
+                <div class="confirm-header">
+                    <div class="confirm-icon">❌</div>
+                    <h1>Tolak Pengajuan Izin</h1>
+                    <p>Berikan alasan yang jelas agar karyawan mengerti mengapa pengajuannya ditolak dan bisa mengambil
+                        langkah yang tepat.</p>
+                </div>
+
+                <!-- BODY -->
+                <div class="confirm-body">
+
+                    <!-- INFO PENGAJUAN -->
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Nama Karyawan</div>
+                            <div class="info-value">{{ izin.nama_salma }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Jabatan</div>
+                            <div class="info-value">{{ izin.nama_jabatan_salma or '—' }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Jenis Izin</div>
+                            <div class="info-value jenis-{{ izin.jenis_izin_salma }}">
+                                {% if izin.jenis_izin_salma == 'izin' %}Izin
+                                {% elif izin.jenis_izin_salma == 'sakit' %}Sakit
+                                {% else %}Cuti{% endif %}
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Periode</div>
+                            <div class="info-value">{{ izin.tanggal_mulai_salma }} s/d {{ izin.tanggal_selesai_salma }}
+                            </div>
+                        </div>
+                        <div class="info-item" style="grid-column: 1 / -1">
+                            <div class="info-label">Alasan Pengajuan Karyawan</div>
+                            <div class="info-value" style="font-weight:400;color:var(--muted)">{{ izin.alasan_izin_salma
+                                or '—' }}</div>
+                        </div>
+                    </div>
+
+                    <!-- FORM ALASAN TOLAK -->
+                    <form method="POST">
+                        {% if error %}
+                        <div class="error-box">⚠️ {{ error }}</div>
+                        {% endif %}
+
+                        <div class="form-section">
+                            <label class="form-label" for="alasan_tolak">
+                                Alasan Penolakan <span class="required">*</span>
+                            </label>
+                            <div class="form-hint">
+                                Alasan ini akan ditampilkan langsung kepada karyawan di halaman Pengajuan Izin mereka.
+                                Tulis dengan jelas dan sopan.
+                            </div>
+                            <textarea class="form-textarea" id="alasan_tolak" name="alasan_tolak"
+                                placeholder="Contoh: Pengajuan tidak disertai surat keterangan dokter, jadwal bertabrakan dengan deadline proyek, kuota cuti bulan ini sudah penuh, dll."
+                                required>{{ request.form.get('alasan_tolak', '') }}</textarea>
+                        </div>
+
+                        <div class="btn-row">
+                            <a href="/admin/izin" class="btn-batal">← Batal</a>
+                            <button type="submit" class="btn-tolak-konfirm">❌ Konfirmasi Tolak</button>
+                        </div>
+                    </form>
+
+                    <!-- CATATAN -->
+                    <div class="note-box">
+                        <span class="note-icon">💡</span>
+                        <span>Setelah ditolak, status pengajuan tidak bisa diubah kembali. Pastikan alasan yang
+                            diberikan sudah tepat sebelum mengkonfirmasi.</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

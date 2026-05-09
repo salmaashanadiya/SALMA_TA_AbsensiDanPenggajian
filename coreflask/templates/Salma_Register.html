@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register Karyawan</title>
+
+<style>
+:root{
+    --blue-main:#4f8cff;
+    --blue-dark:#2f5fd0;
+    --blue-soft:#eef4ff;
+    --text-dark:#1f2937;
+    --text-muted:#6b7280;
+    --radius:20px;
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 
+                 'Segoe UI', Roboto, sans-serif;
+    background:var(--blue-soft);
+}
+
+.container{
+    display:flex;
+    min-height:100vh;
+}
+
+/* LEFT PANEL */
+.welcome-panel{
+    flex:1;
+    background:linear-gradient(135deg,var(--blue-main),var(--blue-dark));
+    color:white;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding:50px;
+    text-align:center;
+}
+
+.welcome-panel h1{
+    font-size:36px;
+    margin-bottom:15px;
+}
+
+.welcome-panel p{
+    font-size:17px;
+    line-height:1.6;
+    opacity:.9;
+    max-width:400px;
+}
+
+/* SVG ICON */
+.icon{
+    margin-top:25px;
+    opacity:.15;
+}
+
+/* FORM SIDE */
+.register-form{
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px;
+}
+
+.register-box{
+    width:100%;
+    max-width:450px;
+    background:white;
+    padding:45px 35px;
+    border-radius:var(--radius);
+    box-shadow:0 20px 40px rgba(0,0,0,.15);
+    animation:fadeUp .6s ease;
+}
+
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.register-box h2{
+    text-align:center;
+    margin-bottom:25px;
+    color:var(--blue-dark);
+}
+
+.input-group{
+    margin-bottom:18px;
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:6px;
+    font-size:14px;
+    font-weight:600;
+    color:var(--text-dark);
+}
+
+.input-group input{
+    width:100%;
+    padding:14px;
+    border:1px solid #ddd;
+    border-radius:var(--radius);
+    transition:.3s;
+    font-size:14px;
+}
+
+.input-group input:focus{
+    border-color:var(--blue-main);
+    box-shadow:0 0 6px rgba(79,140,255,.3);
+    outline:none;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    background:var(--blue-main);
+    color:white;
+    border:none;
+    border-radius:var(--radius);
+    cursor:pointer;
+    font-size:16px;
+    margin-top:10px;
+    transition:.3s;
+}
+
+button:hover{
+    background:var(--blue-dark);
+    transform:translateY(-2px);
+    box-shadow:0 10px 20px rgba(0,0,0,.15);
+}
+
+.footer-text{
+    text-align:center;
+    margin-top:15px;
+    font-size:14px;
+    color:var(--text-muted);
+}
+
+.footer-text a{
+    color:var(--blue-main);
+    text-decoration:none;
+    font-weight:600;
+}
+
+.footer-text a:hover{
+    text-decoration:underline;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+    .container{
+        flex-direction:column;
+    }
+
+    .welcome-panel{
+        padding:30px;
+    }
+
+    .register-form{
+        padding:30px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="welcome-panel">
+        <h1>Selamat Datang!</h1>
+        <p>Daftar untuk mengakses aplikasi Penggajian & Absensi Karyawan.
+           Kelola absensi dan cek gaji dengan mudah.</p>
+
+        <!-- SVG ICON (tanpa FontAwesome) -->
+        <div class="icon">
+            <svg width="130" height="130" fill="white" viewBox="0 0 24 24">
+                <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 
+                2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 
+                1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
+            </svg>
+        </div>
+    </div>
+
+    <div class="register-form">
+        <div class="register-box">
+            <h2>Daftar</h2>
+
+            <form method="POST">
+
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" name="username_salma" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" name="nama_salma" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" name="email_salma" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" name="password_salma" required>
+                </div>
+
+                <div class="input-group">
+                    <label>NIP</label>
+                    <input type="text" name="nip_salma" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Jabatan</label>
+                    <input type="text" name="jabatan_salma">
+                </div>
+
+                <button type="submit">Daftar</button>
+            </form>
+
+            <p class="footer-text">
+                Sudah punya akun? <a href="/">Login</a>
+            </p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

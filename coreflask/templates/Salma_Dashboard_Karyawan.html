@@ -1,0 +1,2107 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Karyawan</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --blue: #4f8cff;
+            --blue-dk: #2f5fd0;
+            --blue-soft: #eef4ff;
+            --sidebar-w: 248px;
+            --header-h: 64px;
+            --radius: 14px;
+            --text: #1a1d23;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --card: #ffffff;
+            --bg: #f5f7fb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ══════════════════════════════════════
+           SIDEBAR
+        ══════════════════════════════════════ */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: white;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .sidebar-logo {
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: white
+        }
+
+        .sidebar-logo span {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: -.2px;
+        }
+
+        .sidebar-user {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--blue-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--blue-dk);
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .sidebar-user p {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .sidebar-user span {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        nav {
+            padding: 12px 12px;
+            flex: 1
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .8px;
+            color: var(--muted);
+            text-transform: uppercase;
+            padding: 8px 8px 4px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
+            transition: .15s;
+            margin-bottom: 2px;
+        }
+
+        .nav-item:hover {
+            background: var(--blue-soft);
+            color: var(--blue-dk)
+        }
+
+        .nav-item.active {
+            background: var(--blue-soft);
+            color: var(--blue);
+            font-weight: 600
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: var(--blue);
+            font-size: 13px
+        }
+
+        .sidebar-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: #e53935;
+            font-size: 13px;
+            font-weight: 500;
+            transition: .15s;
+            width: 100%;
+        }
+
+        .logout-btn:hover {
+            background: #fff5f5
+        }
+
+        /* ══════════════════════════════════════
+           MAIN LAYOUT
+        ══════════════════════════════════════ */
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: var(--header-h);
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar-left h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .topbar-left p {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .date-chip {
+            background: var(--blue-soft);
+            color: var(--blue-dk);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .content {
+            padding: 24px 28px;
+            flex: 1
+        }
+
+        /* ══════════════════════════════════════
+           STAT GRID
+        ══════════════════════════════════════ */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-card .icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .icon-blue {
+            background: #dbeafe
+        }
+
+        .icon-green {
+            background: #dcfce7
+        }
+
+        .icon-yellow {
+            background: #fef9c3
+        }
+
+        .icon-red {
+            background: #fee2e2
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 500
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.1
+        }
+
+        .stat-sub {
+            font-size: 11px;
+            color: var(--muted)
+        }
+
+        /* ══════════════════════════════════════
+           BOTTOM GRID
+        ══════════════════════════════════════ */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .card-sub {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .full-col {
+            grid-column: 1 / -1
+        }
+
+        /* ══════════════════════════════════════
+           BADGES / STATUS
+        ══════════════════════════════════════ */
+        .badge-aktif {
+            background: #dcfce7;
+            color: #166534;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-present {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #dcfce7;
+            color: #166534;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-absent {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%
+        }
+
+        .dot-green {
+            background: #22c55e
+        }
+
+        .dot-red {
+            background: #ef4444
+        }
+
+        /* ══════════════════════════════════════
+           BUTTONS
+        ══════════════════════════════════════ */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--blue);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 9px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .15s;
+        }
+
+        .btn-primary:hover {
+            background: var(--blue-dk)
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: white;
+            color: var(--text);
+            padding: 8px 14px;
+            border-radius: 9px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .15s;
+        }
+
+        .btn-outline:hover {
+            background: var(--bg)
+        }
+
+        .action-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        /* ══════════════════════════════════════
+           PROFIL BANNER
+        ══════════════════════════════════════ */
+        .profil-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            gap: 16px;
+        }
+
+        .profil-left {
+            display: flex;
+            align-items: center;
+            gap: 16px
+        }
+
+        .avatar-big {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--blue-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--blue-dk);
+            border: 3px solid var(--blue);
+            overflow: hidden;
+            transition: .2s;
+        }
+
+        .avatar-big img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .profil-info h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 3px
+        }
+
+        .profil-info p {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 2px
+        }
+
+        /* ══════════════════════════════════════
+           BAR CHART ROWS
+        ══════════════════════════════════════ */
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px
+        }
+
+        .bar-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--muted);
+            width: 80px;
+            flex-shrink: 0;
+        }
+
+        .bar-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0
+        }
+
+        .bar-track {
+            flex: 1;
+            height: 10px;
+            background: var(--bg);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 999px;
+            min-width: 4px
+        }
+
+        .bar-meta {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0
+        }
+
+        .bar-count {
+            font-size: 12px;
+            color: var(--text);
+            font-weight: 500;
+            width: 46px;
+            text-align: right
+        }
+
+        .bar-pct {
+            font-size: 11px;
+            color: var(--muted);
+            width: 32px;
+            text-align: right
+        }
+
+        /* ══════════════════════════════════════
+           SP BANNER
+        ══════════════════════════════════════ */
+        .sp-banner {
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .sp-banner-sp1 {
+            background: #fef9c3;
+            border: 1px solid #fde68a
+        }
+
+        .sp-banner-sp2 {
+            background: #fff7ed;
+            border: 1px solid #fed7aa
+        }
+
+        .sp-banner-sp3 {
+            background: #fee2e2;
+            border: 1px solid #fecaca
+        }
+
+        .sp-banner-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+            margin-top: 2px
+        }
+
+        .sp-banner-body {
+            flex: 1
+        }
+
+        .sp-banner-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px
+        }
+
+        .sp-banner-sp1 .sp-banner-title {
+            color: #92400e
+        }
+
+        .sp-banner-sp2 .sp-banner-title {
+            color: #c2410c
+        }
+
+        .sp-banner-sp3 .sp-banner-title {
+            color: #991b1b
+        }
+
+        .sp-banner-desc {
+            font-size: 12px;
+            line-height: 1.6
+        }
+
+        .sp-banner-sp1 .sp-banner-desc {
+            color: #78350f
+        }
+
+        .sp-banner-sp2 .sp-banner-desc {
+            color: #9a3412
+        }
+
+        .sp-banner-sp3 .sp-banner-desc {
+            color: #7f1d1d
+        }
+
+        .sp-action-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap
+        }
+
+        .btn-sp1-view {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #92400e;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: inherit;
+            transition: .15s;
+        }
+
+        .btn-sp1-view:hover {
+            background: #78350f
+        }
+
+        .btn-sp1-print {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff;
+            color: #92400e;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1.5px solid #f59e0b;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: inherit;
+            transition: .15s;
+        }
+
+        .btn-sp1-print:hover {
+            background: #fef9c3
+        }
+
+        .btn-sp2-view {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #c2410c;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: inherit;
+            transition: .15s;
+        }
+
+        .btn-sp2-view:hover {
+            background: #9a3412
+        }
+
+        .btn-sp2-print {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff;
+            color: #c2410c;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1.5px solid #fb923c;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: inherit;
+            transition: .15s;
+        }
+
+        .btn-sp2-print:hover {
+            background: #fff7ed
+        }
+
+        /* ══════════════════════════════════════
+           SP3 CARD
+        ══════════════════════════════════════ */
+        .sp3-card {
+            background: #fff;
+            border: 2px solid #fecaca;
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .sp3-card-header {
+            background: linear-gradient(135deg, #fee2e2, #fff5f5);
+            padding: 16px 20px;
+            border-bottom: 1px solid #fecaca;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sp3-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            letter-spacing: .3px;
+        }
+
+        .sp3-card-body {
+            padding: 20px
+        }
+
+        .sp3-info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .sp3-info-item {
+            background: var(--bg);
+            border-radius: 9px;
+            padding: 12px 14px
+        }
+
+        .sp3-info-label {
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 500;
+            margin-bottom: 4px
+        }
+
+        .sp3-info-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .sp3-warning-box {
+            background: #fef9c3;
+            border: 1px solid #fde68a;
+            border-radius: 9px;
+            padding: 12px 16px;
+            margin-bottom: 18px;
+            font-size: 12px;
+            color: #78350f;
+            line-height: 1.6;
+        }
+
+        .upload-area {
+            border: 2px dashed #fca5a5;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            background: #fff5f5;
+            cursor: pointer;
+            transition: .2s;
+            position: relative;
+        }
+
+        .upload-area:hover {
+            border-color: #ef4444;
+            background: #fee2e2
+        }
+
+        .upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+
+        .upload-area-icon {
+            font-size: 28px;
+            margin-bottom: 8px
+        }
+
+        .upload-area p {
+            font-size: 13px;
+            color: #991b1b;
+            font-weight: 500
+        }
+
+        .upload-area span {
+            font-size: 11px;
+            color: var(--muted)
+        }
+
+        .btn-respon-sp3 {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #ef4444;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 9px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: inherit;
+            transition: .15s;
+            margin-top: 16px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-respon-sp3:hover {
+            background: #dc2626
+        }
+
+        .sp3-surat-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+            flex-wrap: wrap
+        }
+
+        .btn-sp3-view {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #991b1b;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: inherit;
+            transition: .15s;
+        }
+
+        .btn-sp3-view:hover {
+            background: #7f1d1d
+        }
+
+        .btn-sp3-print {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff;
+            color: #991b1b;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1.5px solid #fca5a5;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: inherit;
+            transition: .15s;
+        }
+
+        .btn-sp3-print:hover {
+            background: #fee2e2
+        }
+
+        /* ══════════════════════════════════════
+           MODAL
+        ══════════════════════════════════════ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 24px;
+        }
+
+        .modal-overlay.open {
+            display: flex
+        }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            background: #fff;
+            border-radius: 16px 16px 0 0;
+            z-index: 1;
+        }
+
+        .modal-topbar span {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1d23
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #6b7280;
+            line-height: 1;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: .15s;
+        }
+
+        .btn-close:hover {
+            background: #f3f4f6;
+            color: #1a1d23
+        }
+
+        .surat-wrap {
+            padding: 40px 52px;
+            font-family: 'Times New Roman', Times, serif;
+            color: #000;
+        }
+
+        .surat-header {
+            text-align: center;
+            margin-bottom: 16px
+        }
+
+        .surat-kop-nama {
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: .5px;
+            text-transform: uppercase
+        }
+
+        .surat-kop-alamat {
+            font-size: 12px;
+            margin-top: 3px
+        }
+
+        .surat-kop-kontak {
+            font-size: 12px
+        }
+
+        .surat-hr {
+            border: none;
+            border-top: 2.5px solid #000;
+            margin: 10px 0 4px
+        }
+
+        .surat-hr-thin {
+            border: none;
+            border-top: 1px solid #000;
+            margin: 2px 0 0
+        }
+
+        .surat-judul {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 22px 0 20px;
+            text-decoration: underline;
+        }
+
+        .surat-meta table {
+            font-size: 13px;
+            border-collapse: collapse
+        }
+
+        .surat-meta td {
+            padding: 2px 0;
+            vertical-align: top
+        }
+
+        .surat-meta td:first-child {
+            width: 100px
+        }
+
+        .surat-meta td:nth-child(2) {
+            width: 16px
+        }
+
+        .surat-alamat {
+            margin: 20px 0 16px;
+            font-size: 13px;
+            line-height: 1.8
+        }
+
+        .surat-body {
+            font-size: 13px;
+            line-height: 1.9;
+            text-align: justify
+        }
+
+        .surat-body p {
+            margin-bottom: 14px
+        }
+
+        .surat-ttd {
+            text-align: right;
+            margin-top: 40px;
+            font-size: 13px;
+            line-height: 1.8
+        }
+
+        .surat-ttd-space {
+            height: 68px
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 8px;
+            padding: 14px 20px;
+            border-top: 1px solid #e5e7eb;
+            position: sticky;
+            bottom: 0;
+            background: #fff;
+            border-radius: 0 0 16px 16px;
+        }
+
+        .btn-cetak {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 9px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: inherit;
+            transition: .15s;
+            color: #fff;
+        }
+
+        .btn-cetak-sp1 {
+            background: #92400e
+        }
+
+        .btn-cetak-sp1:hover {
+            background: #78350f
+        }
+
+        .btn-cetak-sp2 {
+            background: #c2410c
+        }
+
+        .btn-cetak-sp2:hover {
+            background: #9a3412
+        }
+
+        .btn-cetak-sp3 {
+            background: #991b1b
+        }
+
+        .btn-cetak-sp3:hover {
+            background: #7f1d1d
+        }
+
+        .btn-tutup-modal {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: #fff;
+            color: #374151;
+            padding: 10px 16px;
+            border-radius: 9px;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: .15s;
+        }
+
+        .btn-tutup-modal:hover {
+            background: #f5f7fb
+        }
+
+        /* ══════════════════════════════════════
+           RFID ANIMATIONS
+        ══════════════════════════════════════ */
+        @keyframes rfid-ping {
+            0% {
+                transform: scale(1);
+                opacity: .8
+            }
+
+            70% {
+                transform: scale(1.6);
+                opacity: 0
+            }
+
+            100% {
+                transform: scale(1.6);
+                opacity: 0
+            }
+        }
+
+        @keyframes rfid-card-float {
+
+            0%,
+            100% {
+                transform: translateY(0px)
+            }
+
+            50% {
+                transform: translateY(-6px)
+            }
+        }
+
+        @keyframes rfid-wave {
+            0% {
+                transform: scale(.7);
+                opacity: .6
+            }
+
+            100% {
+                transform: scale(1.5);
+                opacity: 0
+            }
+        }
+
+        .rfid-ping {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: #bfdbfe;
+            animation: rfid-ping 1.6s cubic-bezier(0, 0, .2, 1) infinite;
+        }
+
+        .rfid-float {
+            animation: rfid-card-float 2s ease-in-out infinite
+        }
+
+        .rfid-wave {
+            position: absolute;
+            inset: -12px;
+            border-radius: 50%;
+            border: 2px solid #60a5fa;
+            animation: rfid-wave 1.8s ease-out infinite;
+        }
+
+        .rfid-wave2 {
+            animation-delay: .6s
+        }
+
+        .rfid-wave3 {
+            animation-delay: 1.2s
+        }
+
+        /* ══════════════════════════════════════
+           RESPONSIVE
+        ══════════════════════════════════════ */
+        @media(max-width:1100px) {
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .sp3-info-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        @media(max-width:768px) {
+            .sidebar {
+                display: none
+            }
+
+            .main {
+                margin-left: 0
+            }
+
+            .bottom-grid {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- SIDEBAR                                         -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+                </svg>
+            </div>
+            <span>SistemGaji</span>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                {% if karyawan.foto_profil_salma %}
+                <img src="/static/foto_profil/{{ karyawan.foto_profil_salma }}" alt="foto">
+                {% else %}
+                {{ karyawan.nama_salma[:2]|upper }}
+                {% endif %}
+            </div>
+            <p>{{ karyawan.nama_salma }}</p>
+            <span>{{ karyawan.nama_jabatan_salma }}</span>
+        </div>
+
+        <nav>
+            <div class="nav-label">Menu</div>
+            <a href="{{ url_for('karyawan_dashboard') }}" class="nav-item active"><span
+                    class="nav-icon">🏠</span>Dashboard</a>
+            <a href="{{ url_for('profil') }}" class="nav-item"><span class="nav-icon">👤</span>Profil</a>
+            <a href="{{ url_for('karyawan_izin') }}" class="nav-item"><span class="nav-icon">📋</span>Pengajuan Izin</a>
+            <a href="{{ url_for('karyawan_absensi') }}" class="nav-item"><span class="nav-icon">📅</span>Riwayat
+                Absensi</a>
+            <a href="{{ url_for('riwayat_gaji') }}" class="nav-item"><span class="nav-icon">💰</span>Riwayat Gaji</a>
+            <a href="{{ url_for('ganti_password') }}" class="nav-item"><span class="nav-icon">🔒</span>Ganti
+                Password</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="logout-btn">
+                <span>🚪</span> Keluar
+            </a>
+        </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- MAIN                                            -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="main">
+
+        <div class="topbar">
+            <div class="topbar-left">
+                <h2>Selamat datang, {{ karyawan.nama_salma.split()[0] }} 👋</h2>
+                <p>Pantau absensi dan informasi gaji kamu di sini</p>
+            </div>
+            <div class="topbar-right">
+                <span class="date-chip">{{ tanggal_str }}</span>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- ════════════════════════════════════════════════
+             NOTIFIKASI SP AKTIF
+        ════════════════════════════════════════════════ -->
+            {% if sp_aktif %}
+
+            {% if sp_aktif.level_sp == 3 %}
+            <!-- SP3 CARD -->
+            <div class="sp3-card" id="sp3-section">
+                <div class="sp3-card-header">
+                    <span style="font-size:20px">🚨</span>
+                    <div>
+                        <div style="font-size:14px;font-weight:700;color:#991b1b">Surat Peringatan 3 (SP3)</div>
+                        <div style="font-size:12px;color:#b91c1c;margin-top:2px">Kamu menerima SP3 karena tingginya
+                            jumlah alpha. Harap segera merespon.</div>
+                    </div>
+                    <span class="sp3-badge" style="margin-left:auto">PERLU RESPON</span>
+                </div>
+                <div class="sp3-card-body">
+                    <div class="sp3-info-grid">
+                        <div class="sp3-info-item">
+                            <div class="sp3-info-label">Level SP</div>
+                            <div class="sp3-info-value" style="color:#ef4444">SP3 — Terakhir</div>
+                        </div>
+                        <div class="sp3-info-item">
+                            <div class="sp3-info-label">Total Alpha</div>
+                            <div class="sp3-info-value">{{ sp_aktif.total_alpha }} hari</div>
+                        </div>
+                        <div class="sp3-info-item">
+                            <div class="sp3-info-label">Tanggal Kirim</div>
+                            <div class="sp3-info-value">
+                                {{ sp_aktif.dikirim_at.strftime('%d %b %Y') if sp_aktif.dikirim_at else '—' }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sp3-surat-row">
+                        <button class="btn-sp3-view" onclick="bukaModal('modalSP3')">📄 Tampilkan Surat SP3</button>
+                        <button class="btn-sp3-print"
+                            onclick="bukaModal('modalSP3'); setTimeout(function(){ cetakSurat('isiSuratSP3'); }, 400)">🖨️
+                            Cetak Surat</button>
+                    </div>
+                    <div class="sp3-warning-box">
+                        ⚠️ <strong>Perhatian!</strong> SP3 adalah peringatan terakhir. Jika kamu tidak merespon
+                        dengan mengunggah bukti atau klarifikasi, admin berhak menonaktifkan akun kamu.
+                        Segera upload foto/dokumen klarifikasi di bawah ini.
+                    </div>
+                    <form method="POST" action="{{ url_for('karyawan_respon_sp', id_sp=sp_aktif.id_sp) }}"
+                        enctype="multipart/form-data">
+                        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">📎 Upload Bukti
+                            / Klarifikasi</div>
+                        <div class="upload-area" id="upload-area">
+                            <input type="file" name="foto_bukti_sp" id="foto_bukti_sp" accept=".jpg,.jpeg,.png,.pdf"
+                                required onchange="handleFileChange(this)">
+                            <div class="upload-area-icon" id="upload-icon">📁</div>
+                            <p id="upload-label">Klik atau seret file ke sini</p>
+                            <span id="upload-hint">Format: JPG, PNG, PDF (maks. 5 MB)</span>
+                        </div>
+                        <button type="submit" class="btn-respon-sp3"
+                            onclick="return confirm('Kirim respon SP3 ini? Pastikan file yang kamu upload sudah benar.')">
+                            🚀 Kirim Respon SP3
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {% elif sp_aktif.level_sp == 2 %}
+            <!-- SP2 BANNER -->
+            <div class="sp-banner sp-banner-sp2">
+                <div class="sp-banner-icon">⚠️</div>
+                <div class="sp-banner-body">
+                    <div class="sp-banner-title">Kamu menerima Surat Peringatan 2 (SP2)</div>
+                    <div class="sp-banner-desc">
+                        Total <strong>{{ sp_aktif.total_alpha }} hari alpha</strong> tercatat tahun ini.
+                        Ini adalah peringatan kedua. Jika alpha terus bertambah hingga 9 hari, kamu akan menerima
+                        <strong>SP3</strong> yang mengharuskan respon langsung. Harap segera perbaiki kehadiranmu.
+                        Insentif kamu dipotong <strong>50% selama 3 bulan</strong> sesuai ketentuan SP2.
+                    </div>
+                    <div class="sp-action-row">
+                        <button class="btn-sp2-view" onclick="bukaModal('modalSP2')">📄 Tampilkan Surat SP2</button>
+                        <button class="btn-sp2-print"
+                            onclick="bukaModal('modalSP2'); setTimeout(function(){ cetakSurat('isiSuratSP2'); }, 400)">🖨️
+                            Cetak Surat</button>
+                    </div>
+                </div>
+            </div>
+
+            {% elif sp_aktif.level_sp == 1 %}
+            <!-- SP1 BANNER -->
+            <div class="sp-banner sp-banner-sp1">
+                <div class="sp-banner-icon">📋</div>
+                <div class="sp-banner-body">
+                    <div class="sp-banner-title">Kamu menerima Surat Peringatan 1 (SP1)</div>
+                    <div class="sp-banner-desc">
+                        Total <strong>{{ sp_aktif.total_alpha }} hari alpha</strong> tercatat tahun ini.
+                        Ini adalah peringatan pertama. Harap perbaiki kehadiran agar tidak naik ke SP2 atau SP3.
+                    </div>
+                    <div class="sp-action-row">
+                        <button class="btn-sp1-view" onclick="bukaModal('modalSP1')">📄 Tampilkan Surat SP1</button>
+                        <button class="btn-sp1-print"
+                            onclick="bukaModal('modalSP1'); setTimeout(function(){ cetakSurat('isiSuratSP1'); }, 400)">🖨️
+                            Cetak Surat</button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% endif %}
+
+            <!-- ════════════════════════════════════════════════
+             MODAL SP1
+        ════════════════════════════════════════════════ -->
+            {% if sp_aktif and sp_aktif.level_sp == 1 %}
+            <div class="modal-overlay" id="modalSP1">
+                <div class="modal-box">
+                    <div class="modal-topbar">
+                        <span>📄 Surat Peringatan 1 (SP1)</span>
+                        <button class="btn-close" onclick="tutupModal('modalSP1')">✕</button>
+                    </div>
+                    <div class="surat-wrap" id="isiSuratSP1">
+                        <div class="surat-header">
+                            <div class="surat-kop-nama">PT Mewah Indah Furniture</div>
+                            <div class="surat-kop-alamat">Jalan Melambai Nomor 20–23, Bandung</div>
+                            <div class="surat-kop-kontak">Telepon: 09228 &nbsp;|&nbsp; Email: contact@mewahfurniture.com
+                            </div>
+                            <hr class="surat-hr">
+                            <hr class="surat-hr-thin">
+                        </div>
+                        <div class="surat-judul">Surat Teguran</div>
+                        <div class="surat-meta">
+                            <table>
+                                <tr>
+                                    <td>Nomor</td>
+                                    <td>:</td>
+                                    <td>SP1/{{ sp_aktif.id_sp }}/{{ sp_aktif.dikirim_at.strftime('%m/%Y') if
+                                        sp_aktif.dikirim_at else '—' }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Lampiran</td>
+                                    <td>:</td>
+                                    <td>1 lembar</td>
+                                </tr>
+                                <tr>
+                                    <td>Perihal</td>
+                                    <td>:</td>
+                                    <td>Surat Peringatan Pertama (SP 1)</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="surat-alamat">
+                            Yth.<br>
+                            Sdr. <strong>{{ karyawan.nama_salma }}</strong><br>
+                            <em>{{ karyawan.nama_jabatan_salma }}</em><br>
+                            di tempat
+                        </div>
+                        <div class="surat-body">
+                            <p>Dengan hormat, sehubungan dengan catatan absensi Saudara yang menunjukkan adanya
+                                ketidakhadiran tanpa keterangan (alpha) sebanyak <strong>{{ sp_aktif.total_alpha }}
+                                    hari</strong> pada tahun berjalan ini, maka perusahaan perlu menyampaikan Surat
+                                Peringatan Pertama (SP 1) kepada Saudara.</p>
+                            <p>Ketidakhadiran tanpa keterangan merupakan pelanggaran terhadap tata tertib perusahaan
+                                yang tercantum dalam Peraturan Perusahaan. Hal ini berdampak pada produktivitas dan
+                                kinerja tim secara keseluruhan, sehingga tidak dapat dibiarkan tanpa tindakan korektif.
+                            </p>
+                            <p>Melalui surat peringatan pertama ini, perusahaan menghimbau agar Saudara segera
+                                memperbaiki kehadiran dan kedisiplinan kerja. Apabila setelah diterbitkannya SP 1 ini
+                                Saudara masih menunjukkan pelanggaran serupa, maka perusahaan akan menerbitkan Surat
+                                Peringatan Kedua (SP 2) disertai sanksi berupa pemotongan insentif karyawan sebesar 50%
+                                selama 3 bulan.</p>
+                            <p>Apabila pelanggaran masih berlanjut setelah SP 2, perusahaan berhak menerbitkan Surat
+                                Peringatan Ketiga (SP 3), yang berarti Saudara akan diputus hubungan kerjanya dengan
+                                perusahaan sesuai ketentuan yang berlaku.</p>
+                            <p>Demikian surat peringatan ini disampaikan. Besar harapan kami agar Saudara dapat
+                                mengevaluasi diri dan menunjukkan performa kehadiran yang baik demi kemajuan bersama.
+                            </p>
+                        </div>
+                        <div class="surat-ttd">
+                            <div>Jakarta, {{ sp_aktif.dikirim_at.strftime('%d %B %Y') if sp_aktif.dikirim_at else
+                                tanggal_str }}</div>
+                            <div>Admin Absensi</div>
+                            <div class="surat-ttd-space"></div>
+                            <div><strong>{{ nama_admin }}</strong></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-tutup-modal" onclick="tutupModal('modalSP1')">✕ Tutup</button>
+                        <button class="btn-cetak btn-cetak-sp1" onclick="cetakSurat('isiSuratSP1')">🖨️ Cetak / Simpan
+                            PDF</button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ════════════════════════════════════════════════
+             MODAL SP2
+        ════════════════════════════════════════════════ -->
+            {% if sp_aktif and sp_aktif.level_sp == 2 %}
+            <div class="modal-overlay" id="modalSP2">
+                <div class="modal-box">
+                    <div class="modal-topbar">
+                        <span>📄 Surat Peringatan 2 (SP2)</span>
+                        <button class="btn-close" onclick="tutupModal('modalSP2')">✕</button>
+                    </div>
+                    <div class="surat-wrap" id="isiSuratSP2">
+                        <div class="surat-header">
+                            <div class="surat-kop-nama">PT Mewah Indah Furniture</div>
+                            <div class="surat-kop-alamat">Jalan Melambai Nomor 20–23, Bandung</div>
+                            <div class="surat-kop-kontak">Telepon: 09228 &nbsp;|&nbsp; Email: contact@mewahfurniture.com
+                            </div>
+                            <hr class="surat-hr">
+                            <hr class="surat-hr-thin">
+                        </div>
+                        <div class="surat-judul">Surat Peringatan Kedua</div>
+                        <div class="surat-meta">
+                            <table>
+                                <tr>
+                                    <td>Nomor</td>
+                                    <td>:</td>
+                                    <td>SP2/{{ sp_aktif.id_sp }}/{{ sp_aktif.dikirim_at.strftime('%m/%Y') if
+                                        sp_aktif.dikirim_at else '—' }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Lampiran</td>
+                                    <td>:</td>
+                                    <td>1 lembar</td>
+                                </tr>
+                                <tr>
+                                    <td>Perihal</td>
+                                    <td>:</td>
+                                    <td>Surat Peringatan Kedua (SP 2)</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="surat-alamat">
+                            Yth.<br>
+                            Sdr. <strong>{{ karyawan.nama_salma }}</strong><br>
+                            <em>{{ karyawan.nama_jabatan_salma }}</em><br>
+                            di tempat
+                        </div>
+                        <div class="surat-body">
+                            <p>Dengan hormat, merujuk pada Surat Peringatan Pertama (SP 1) yang telah diterbitkan
+                                sebelumnya, perusahaan mencatat bahwa Saudara masih menunjukkan ketidakhadiran tanpa
+                                keterangan (alpha) dengan total <strong>{{ sp_aktif.total_alpha }} hari</strong> pada
+                                tahun berjalan ini. Oleh karena itu, perusahaan menerbitkan Surat Peringatan Kedua (SP
+                                2) kepada Saudara.</p>
+                            <p>Ketidakhadiran tanpa keterangan yang berulang merupakan pelanggaran serius terhadap tata
+                                tertib dan disiplin kerja perusahaan sebagaimana tercantum dalam Peraturan Perusahaan.
+                                Tindakan ini berdampak langsung pada produktivitas tim dan operasional perusahaan secara
+                                keseluruhan.</p>
+                            <p>Sehubungan dengan SP 2 ini, perusahaan memberikan sanksi berupa <strong>pemotongan
+                                    insentif sebesar 50% selama 3 (tiga) bulan</strong> terhitung sejak tanggal surat
+                                ini diterbitkan. Sanksi tersebut merupakan konsekuensi yang telah diinformasikan pada SP
+                                1 sebelumnya.</p>
+                            <p>Perusahaan menghimbau agar Saudara segera memperbaiki kehadiran dan kedisiplinan kerja
+                                secara nyata. Apabila setelah diterbitkannya SP 2 ini Saudara masih menunjukkan
+                                pelanggaran serupa hingga total alpha mencapai 9 (sembilan) hari atau lebih, maka
+                                perusahaan akan menerbitkan Surat Peringatan Ketiga (SP 3) yang dapat berujung pada
+                                pemutusan hubungan kerja (PHK) sesuai ketentuan yang berlaku.</p>
+                            <p>Demikian surat peringatan kedua ini disampaikan dengan harapan Saudara dapat segera
+                                melakukan perbaikan yang diperlukan. Perusahaan masih memberikan kesempatan kepada
+                                Saudara untuk membuktikan komitmen dan kedisiplinan dalam bekerja.</p>
+                        </div>
+                        <div class="surat-ttd">
+                            <div>Jakarta, {{ sp_aktif.dikirim_at.strftime('%d %B %Y') if sp_aktif.dikirim_at else
+                                tanggal_str }}</div>
+                            <div>Admin Absensi</div>
+                            <div class="surat-ttd-space"></div>
+                            <div><strong>{{ nama_admin }}</strong></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-tutup-modal" onclick="tutupModal('modalSP2')">✕ Tutup</button>
+                        <button class="btn-cetak btn-cetak-sp2" onclick="cetakSurat('isiSuratSP2')">🖨️ Cetak / Simpan
+                            PDF</button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ════════════════════════════════════════════════
+             MODAL SP3
+        ════════════════════════════════════════════════ -->
+            {% if sp_aktif and sp_aktif.level_sp == 3 %}
+            <div class="modal-overlay" id="modalSP3">
+                <div class="modal-box">
+                    <div class="modal-topbar">
+                        <span>📄 Surat Peringatan 3 (SP3)</span>
+                        <button class="btn-close" onclick="tutupModal('modalSP3')">✕</button>
+                    </div>
+                    <div class="surat-wrap" id="isiSuratSP3">
+                        <div class="surat-header">
+                            <div class="surat-kop-nama">PT Mewah Indah Furniture</div>
+                            <div class="surat-kop-alamat">Jalan Melambai Nomor 20–23, Bandung</div>
+                            <div class="surat-kop-kontak">Telepon: 09228 &nbsp;|&nbsp; Email: contact@mewahfurniture.com
+                            </div>
+                            <hr class="surat-hr">
+                            <hr class="surat-hr-thin">
+                        </div>
+                        <div class="surat-judul">Surat Peringatan Ketiga</div>
+                        <div class="surat-meta">
+                            <table>
+                                <tr>
+                                    <td>Nomor</td>
+                                    <td>:</td>
+                                    <td>SP3/{{ sp_aktif.id_sp }}/{{ sp_aktif.dikirim_at.strftime('%m/%Y') if
+                                        sp_aktif.dikirim_at else '—' }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Lampiran</td>
+                                    <td>:</td>
+                                    <td>1 lembar</td>
+                                </tr>
+                                <tr>
+                                    <td>Perihal</td>
+                                    <td>:</td>
+                                    <td>Surat Peringatan Ketiga dan Terakhir (SP 3)</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="surat-alamat">
+                            Yth.<br>
+                            Sdr. <strong>{{ karyawan.nama_salma }}</strong><br>
+                            <em>{{ karyawan.nama_jabatan_salma }}</em><br>
+                            di tempat
+                        </div>
+                        <div class="surat-body">
+                            <p>Dengan hormat, merujuk pada Surat Peringatan Pertama (SP 1) dan Surat Peringatan Kedua
+                                (SP 2) yang telah diterbitkan sebelumnya, perusahaan mencatat bahwa Saudara tidak
+                                menunjukkan perubahan perilaku yang signifikan. Total ketidakhadiran tanpa keterangan
+                                (alpha) Saudara telah mencapai <strong>{{ sp_aktif.total_alpha }} hari</strong> pada
+                                tahun berjalan ini. Oleh karena itu, perusahaan dengan sangat menyesal menerbitkan Surat
+                                Peringatan Ketiga dan Terakhir (SP 3).</p>
+                            <p>Pelanggaran berulang terhadap tata tertib kehadiran merupakan tindakan yang tidak dapat
+                                lagi ditoleransi. Perusahaan telah memberikan dua kali kesempatan melalui SP 1 dan SP 2
+                                namun tidak dipergunakan dengan baik oleh Saudara. Hal ini mencerminkan kurangnya
+                                komitmen dan tanggung jawab terhadap kewajiban kerja.</p>
+                            <p>Melalui SP 3 ini, perusahaan mewajibkan Saudara untuk <strong>menyampaikan klarifikasi
+                                    dan bukti pendukung</strong> secara tertulis kepada Bagian Personalia
+                                selambat-lambatnya <strong>3 (tiga) hari kerja</strong> sejak diterimanya surat ini.
+                                Kegagalan untuk merespon dalam batas waktu yang ditentukan akan dijadikan dasar
+                                pertimbangan pemutusan hubungan kerja (PHK).</p>
+                            <p>Apabila klarifikasi Saudara tidak dapat diterima atau dianggap tidak memadai oleh
+                                perusahaan, maka perusahaan berhak mengambil tindakan berupa <strong>Pemutusan Hubungan
+                                    Kerja (PHK)</strong> sesuai dengan ketentuan peraturan perundang-undangan
+                                ketenagakerjaan yang berlaku, tanpa kewajiban pemberian pesangon tambahan di luar
+                                ketentuan hukum.</p>
+                            <p>Demikian surat peringatan ketiga dan terakhir ini disampaikan. Perusahaan berharap
+                                Saudara dapat merespon dengan itikad baik dan memberikan klarifikasi yang dapat
+                                dipertanggungjawabkan. Segera hubungi Bagian Personalia untuk tindak lanjut lebih
+                                lanjut.</p>
+                        </div>
+                        <div class="surat-ttd">
+                            <div>Jakarta, {{ sp_aktif.dikirim_at.strftime('%d %B %Y') if sp_aktif.dikirim_at else
+                                tanggal_str }}</div>
+                            <div>Admin Absensi</div>
+                            <div class="surat-ttd-space"></div>
+                            <div><strong>{{ nama_admin }}</strong></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-tutup-modal" onclick="tutupModal('modalSP3')">✕ Tutup</button>
+                        <button class="btn-cetak btn-cetak-sp3" onclick="cetakSurat('isiSuratSP3')">🖨️ Cetak / Simpan
+                            PDF</button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ════════════════════════════════════════════════
+             NOTIFIKASI BELUM ABSEN
+        ════════════════════════════════════════════════ -->
+            {% if status_hari_ini == 'pulang' %}
+            <!-- SUDAH PULANG — tidak perlu notif apapun, sembunyikan -->
+
+            {% elif status_hari_ini == 'hadir' %}
+            <!-- SUDAH MASUK, BELUM PULANG -->
+            <div
+                style="display:flex;align-items:center;gap:12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px 16px;margin-bottom:16px;color:#1d4ed8">
+                <span style="font-size:16px">🕐</span>
+                <span style="font-size:13px;font-weight:500">Kamu sudah absen masuk. Jangan lupa <strong>Tap Kartu
+                        RFID</strong> lagi untuk absen pulang!</span>
+            </div>
+
+            {% else %}
+            <!-- BELUM ABSEN SAMA SEKALI -->
+            <div
+                style="display:flex;align-items:center;gap:12px;background:#fef9c3;border:1px solid #fde68a;border-radius:10px;padding:12px 16px;margin-bottom:16px;color:#92400e">
+                <span style="font-size:16px">⏰</span>
+                <span style="font-size:13px;font-weight:500">Kamu belum absen hari ini! Jangan lupa <strong>Tap Kartu
+                        RFID</strong> untuk absen.</span>
+            </div>
+            {% endif %}
+
+            <!-- ════════════════════════════════════════════════
+             PROFIL BANNER
+        ════════════════════════════════════════════════ -->
+            <div class="card profil-banner">
+                <div class="profil-left">
+                    <div class="avatar-big">
+                        {% if karyawan.foto_profil_salma %}
+                        <img src="/static/foto_profil/{{ karyawan.foto_profil_salma }}" alt="foto">
+                        {% else %}
+                        {{ karyawan.nama_salma[:2]|upper }}
+                        {% endif %}
+                    </div>
+                    <div class="profil-info">
+                        <h3>{{ karyawan.nama_salma }}</h3>
+                        <p>{{ karyawan.nama_jabatan_salma }} &nbsp;·&nbsp; NIP: {{ karyawan.nip_salma }}</p>
+                        <p>{{ karyawan.email_salma }}</p>
+                        <span class="badge-aktif" style="margin-top:6px;display:inline-block">{{
+                            karyawan.status_user_salma }}</span>
+                    </div>
+                </div>
+                <a href="{{ url_for('profil') }}" class="btn-outline">👤 Lihat Profil</a>
+            </div>
+
+            <!-- ════════════════════════════════════════════════
+             STAT CARDS
+        ════════════════════════════════════════════════ -->
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="icon icon-blue">📅</div>
+                    <div class="stat-label">Total Hadir Bulan Ini</div>
+                    <div class="stat-value">{{ total_hadir }}</div>
+                    <div class="stat-sub">hari kerja</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="icon icon-green">✅</div>
+                    <div class="stat-label">Status Hari Ini</div>
+                    <div class="stat-value" style="font-size:14px;margin-top:4px">
+                        {% if status_hari_ini == 'pulang' %}
+                        <span class="status-present"><span class="dot dot-green"></span> Sudah Pulang</span>
+                        {% elif status_hari_ini == 'hadir' %}
+                        <span class="status-present"><span class="dot dot-green"></span> Sudah Absen</span>
+                        {% else %}
+                        <span class="status-absent"><span class="dot dot-red"></span> Belum Absen</span>
+                        {% endif %}
+                    </div>
+                    <div class="stat-sub">per hari ini</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="icon icon-yellow">💰</div>
+                    <div class="stat-label">Gaji Terakhir</div>
+                    <div class="stat-value" style="font-size:17px">
+                        {% if gaji %}Rp {{ "{:,.0f}".format(gaji.total_gaji_salma) }}{% else %}—{% endif %}
+                    </div>
+                    <div class="stat-sub">
+                        {% if gaji %}Bulan {{ gaji.bulan_gaji_salma }}/{{ gaji.tahun_gaji_salma }}{% else %}belum ada
+                        data{% endif %}
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="icon icon-red">📊</div>
+                    <div class="stat-label">Status Gaji</div>
+                    <div class="stat-value" style="font-size:14px;margin-top:4px">
+                        {% if gaji %}
+                        {% if gaji.status_gaji_salma == 'sudah_dibayar' %}
+                        <span class="status-present"><span class="dot dot-green"></span> Sudah Dibayar</span>
+                        {% else %}
+                        <span class="status-absent"><span class="dot dot-red"></span> Belum Dibayar</span>
+                        {% endif %}
+                        {% else %}
+                        <span style="color:var(--muted);font-size:13px">—</span>
+                        {% endif %}
+                    </div>
+                    <div class="stat-sub">status pembayaran</div>
+                </div>
+            </div>
+
+            <!-- ════════════════════════════════════════════════
+             BOTTOM GRID  (3 kartu: Rekap | Absensi | Gaji)
+        ════════════════════════════════════════════════ -->
+            <div class="bottom-grid">
+
+                <!-- ── 1. REKAP ABSENSI ── -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Rekap Absensi Bulan Ini</div>
+                            <div class="card-sub">Distribusi kehadiran karyawan</div>
+                        </div>
+                    </div>
+
+                    {% set total_hari = total_hadir + total_izin + total_alpha + total_sakit %}
+                    {% set pct_hadir = ((total_hadir / total_hari * 100) | round | int) if total_hari > 0 else 0 %}
+                    {% set pct_izin = ((total_izin / total_hari * 100) | round | int) if total_hari > 0 else 0 %}
+                    {% set pct_sakit = ((total_sakit / total_hari * 100) | round | int) if total_hari > 0 else 0 %}
+                    {% set pct_alpha = ((total_alpha / total_hari * 100) | round | int) if total_hari > 0 else 0 %}
+
+                    <div class="bar-row">
+                        <div class="bar-label"><span class="bar-dot" style="background:#4f8cff"></span>Hadir</div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width:{{ pct_hadir }}%;background:#4f8cff"></div>
+                        </div>
+                        <div class="bar-meta">
+                            <span class="bar-count">{{ total_hadir }} hari</span>
+                            <span class="bar-pct">{{ pct_hadir }}%</span>
+                        </div>
+                    </div>
+
+                    <div class="bar-row">
+                        <div class="bar-label"><span class="bar-dot" style="background:#fbbf24"></span>Izin</div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width:{{ pct_izin }}%;background:#fbbf24"></div>
+                        </div>
+                        <div class="bar-meta">
+                            <span class="bar-count">{{ total_izin }} hari</span>
+                            <span class="bar-pct">{{ pct_izin }}%</span>
+                        </div>
+                    </div>
+
+                    <div class="bar-row">
+                        <div class="bar-label"><span class="bar-dot" style="background:#ecc153"></span>Sakit</div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width:{{ pct_sakit }}%;background:#ecc153"></div>
+                        </div>
+                        <div class="bar-meta">
+                            <span class="bar-count">{{ total_sakit }} hari</span>
+                            <span class="bar-pct">{{ pct_sakit }}%</span>
+                        </div>
+                    </div>
+
+                    <div class="bar-row">
+                        <div class="bar-label"><span class="bar-dot" style="background:#f87171"></span>Alpha</div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width:{{ pct_alpha }}%;background:#f87171"></div>
+                        </div>
+                        <div class="bar-meta">
+                            <span class="bar-count">{{ total_alpha }} hari</span>
+                            <span class="bar-pct">{{ pct_alpha }}%</span>
+                        </div>
+                    </div>
+
+                    <div
+                        style="margin-top:16px;padding:10px 14px;background:var(--bg);border-radius:9px;display:flex;justify-content:space-between;align-items:center">
+                        <span style="font-size:12px;color:var(--muted)">Total hari tercatat</span>
+                        <span style="font-size:14px;font-weight:600;color:var(--text)">{{ total_hari }} hari</span>
+                    </div>
+                </div>
+
+                <!-- ── 2. ABSENSI HARI INI ── -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Absensi Hari Ini</div>
+                            <div class="card-sub">Catat kehadiran kamu</div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden RFID input -->
+                    <div class="action-row">
+                        <input type="text" id="rfidInput" autofocus
+                            style="position:absolute;opacity:0;height:0;width:0;border:none;">
+                    </div>
+
+                    {% if status_hari_ini == 'pulang' %}
+                    <!-- SUDAH ABSEN PULANG -->
+                    <div
+                        style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;gap:10px;text-align:center">
+                        <div
+                            style="width:72px;height:72px;border-radius:50%;background:#dcfce7;border:3px solid #22c55e;display:flex;align-items:center;justify-content:center;font-size:32px">
+                            ✅
+                        </div>
+                        <div style="font-size:15px;font-weight:700;color:#166534">Anda Sudah Absen Pulang!</div>
+                        <div style="font-size:12px;color:var(--muted)">Sampai jumpa besok!<br>Istirahat yang cukup ya.
+                        </div>
+                    </div>
+
+                    {% elif status_hari_ini == 'hadir' %}
+                    <!-- SUDAH ABSEN MASUK -->
+                    <div
+                        style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;gap:10px;text-align:center">
+                        <div
+                            style="width:72px;height:72px;border-radius:50%;background:#dcfce7;border:3px solid #22c55e;display:flex;align-items:center;justify-content:center;font-size:32px">
+                            ✅
+                        </div>
+                        <div style="font-size:15px;font-weight:700;color:#166534">Anda Sudah Absen!</div>
+                        <div style="font-size:12px;color:var(--muted)">Kehadiran kamu hari ini sudah tercatat.<br>Jangan
+                            lupa absen pulang ya!</div>
+                    </div>
+
+                    {% else %}
+                    <!-- BELUM ABSEN -->
+                    <div
+                        style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;gap:10px;text-align:center">
+                        <div
+                            style="width:72px;height:72px;border-radius:50%;background:#fef9c3;border:3px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:32px">
+                            ⚠️
+                        </div>
+                        <div style="font-size:15px;font-weight:700;color:#92400e">Anda Belum Absen!</div>
+                        <div style="font-size:12px;color:var(--muted)">Silakan tap kartu RFID ke perangkat<br>pembaca
+                            untuk absen masuk.</div>
+                    </div>
+                    {% endif %}
+
+                    <!-- SP NOTIF di dalam card absensi -->
+                    {% if sp_aktif %}
+                    <div style="margin-top:16px;padding:12px 14px;border-radius:10px;
+                    {% if sp_aktif.level_sp == 3 %}background:#fee2e2;border:1px solid #fecaca;
+                    {% elif sp_aktif.level_sp == 2 %}background:#fff7ed;border:1px solid #fed7aa;
+                    {% else %}background:#fef9c3;border:1px solid #fde68a;{% endif %}">
+                        <div style="font-size:12px;font-weight:700;
+                        {% if sp_aktif.level_sp == 3 %}color:#991b1b;
+                        {% elif sp_aktif.level_sp == 2 %}color:#c2410c;
+                        {% else %}color:#92400e;{% endif %}
+                        margin-bottom:4px">
+                            ⚠️ SP{{ sp_aktif.level_sp }} Aktif
+                        </div>
+                        <div style="font-size:11px;color:var(--muted);line-height:1.5">
+                            {{ sp_aktif.total_alpha }} hari alpha tahun ini.
+                            {% if sp_aktif.level_sp == 3 %}
+                            <a href="#sp3-section" style="color:#991b1b;font-weight:600">Respon sekarang ↑</a>
+                            {% elif sp_aktif.level_sp == 2 %}
+                            <a href="#" onclick="bukaModal('modalSP2');return false;"
+                                style="color:#c2410c;font-weight:600">Lihat surat ↑</a>
+                            {% elif sp_aktif.level_sp == 1 %}
+                            <a href="#" onclick="bukaModal('modalSP1');return false;"
+                                style="color:#92400e;font-weight:600">Lihat surat ↑</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <!-- ── END ABSENSI HARI INI ── -->
+
+                <!-- ── 3. GAJI TERAKHIR (full width) ── -->
+                <div class="card full-col">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Gaji Terakhir</div>
+                            {% if gaji %}
+                            <div class="card-sub">Bulan {{ gaji.bulan_gaji_salma }}/{{ gaji.tahun_gaji_salma }}</div>
+                            {% endif %}
+                        </div>
+                        <a href="{{ url_for('riwayat_gaji') }}" class="btn-outline">Lihat semua</a>
+                    </div>
+
+                    {% if gaji %}
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+                        <div style="background:var(--bg);border-radius:10px;padding:14px">
+                            <div class="stat-label">Gaji Pokok</div>
+                            <div style="font-size:15px;font-weight:600;margin-top:6px">Rp {{
+                                "{:,.0f}".format(gaji.gaji_pokok_salma) }}</div>
+                        </div>
+                        <div style="background:var(--bg);border-radius:10px;padding:14px">
+                            <div class="stat-label">Bonus</div>
+                            <div style="font-size:15px;font-weight:600;margin-top:6px;color:#16a34a">+ Rp {{
+                                "{:,.0f}".format(gaji.bonus_salma) }}</div>
+                        </div>
+                        <div style="background:var(--bg);border-radius:10px;padding:14px">
+                            <div class="stat-label">Potongan</div>
+                            <div style="font-size:15px;font-weight:600;margin-top:6px;color:#dc2626">- Rp {{
+                                "{:,.0f}".format(gaji.potongan_salma) }}</div>
+                        </div>
+                        <div style="background:var(--blue-soft);border-radius:10px;padding:14px">
+                            <div class="stat-label" style="color:var(--blue-dk)">Total Diterima</div>
+                            <div style="font-size:15px;font-weight:700;margin-top:6px;color:var(--blue-dk)">Rp {{
+                                "{:,.0f}".format(gaji.total_gaji_salma) }}</div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p style="font-size:13px;color:var(--muted);padding:20px 0">Belum ada data gaji.</p>
+                    {% endif %}
+                </div>
+                <!-- ── END GAJI TERAKHIR ── -->
+
+            </div><!-- end .bottom-grid -->
+
+        </div><!-- end .content -->
+    </div><!-- end .main -->
+
+    <script>
+        /* ── RFID ── */
+        const inputRFID = document.getElementById("rfidInput");
+        document.addEventListener("click", () => inputRFID.focus());
+        window.onload = () => inputRFID.focus();
+
+        inputRFID.addEventListener("change", async function () {
+            let id_kartu = this.value.trim();
+            if (!id_kartu) return;
+            try {
+                let res = await fetch("/rfid/absen", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id_kartu: id_kartu })
+                });
+                let data = await res.json();
+                if (data.status === "MASUK") {
+                    alert("✅ Masuk: " + data.nama);
+                    location.reload();
+                } else if (data.status === "PULANG") {
+                    alert("🔵 Pulang: " + data.nama);
+                    location.reload();
+                } else if (data.status === "TIDAK_DIKENAL") {
+                    alert("❌ Kartu tidak dikenal");
+                } else if (data.status === "NONAKTIF") {
+                    alert("🚫 Akun tidak aktif");
+                } else {
+                    alert(data.pesan || "Status: " + data.status);
+                }
+            } catch (err) {
+                alert("❌ Gagal koneksi ke server");
+            }
+            this.value = "";
+        });
+
+        /* ── Upload file label (SP3) ── */
+        function handleFileChange(input) {
+            const label = document.getElementById("upload-label");
+            const hint = document.getElementById("upload-hint");
+            const icon = document.getElementById("upload-icon");
+            const area = document.getElementById("upload-area");
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                label.textContent = "✅ " + file.name;
+                hint.textContent = (file.size / 1024).toFixed(1) + " KB — siap dikirim";
+                icon.textContent = "📄";
+                area.style.borderColor = "#22c55e";
+                area.style.background = "#f0fdf4";
+            }
+        }
+
+        /* ── Modal helpers ── */
+        function bukaModal(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.add('open');
+        }
+        function tutupModal(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.remove('open');
+        }
+
+        /* Tutup modal klik luar */
+        document.addEventListener('DOMContentLoaded', function () {
+            ['modalSP1', 'modalSP2', 'modalSP3'].forEach(function (id) {
+                const m = document.getElementById(id);
+                if (m) m.addEventListener('click', function (e) {
+                    if (e.target === this) tutupModal(id);
+                });
+            });
+        });
+
+        /* ── Cetak / Save PDF ── */
+        function cetakSurat(isiId) {
+            const isi = document.getElementById(isiId);
+            if (!isi) return;
+            const judulMap = {
+                'isiSuratSP1': 'Surat Peringatan 1 — SP1',
+                'isiSuratSP2': 'Surat Peringatan 2 — SP2',
+                'isiSuratSP3': 'Surat Peringatan 3 — SP3'
+            };
+            const judul = judulMap[isiId] || 'Surat Peringatan';
+            const win = window.open('', '_blank');
+            win.document.write(`<!DOCTYPE html>
+<html lang="id"><head><meta charset="UTF-8"><title>${judul}</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0 }
+body { font-family:'Times New Roman',Times,serif; color:#000; padding:50px 70px; font-size:13px; line-height:1.9 }
+.surat-header { text-align:center; margin-bottom:16px }
+.surat-kop-nama { font-size:17px; font-weight:700; text-transform:uppercase; letter-spacing:.5px }
+.surat-kop-alamat,.surat-kop-kontak { font-size:12px }
+.surat-hr { border:none; border-top:2.5px solid #000; margin:10px 0 4px }
+.surat-hr-thin { border:none; border-top:1px solid #000; margin:2px 0 0 }
+.surat-judul { text-align:center; font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:1px; text-decoration:underline; margin:22px 0 20px }
+.surat-meta table { border-collapse:collapse }
+.surat-meta td { padding:2px 0; vertical-align:top }
+.surat-meta td:first-child { width:100px }
+.surat-meta td:nth-child(2) { width:16px }
+.surat-alamat { margin:20px 0 16px; line-height:1.8 }
+.surat-body { text-align:justify }
+.surat-body p { margin-bottom:14px }
+.surat-ttd { text-align:right; margin-top:40px; line-height:1.8 }
+.surat-ttd-space { height:68px }
+@media print { body { padding:30px 50px } @page { margin:1.5cm 2cm } }
+</style></head><body>${isi.innerHTML}</body></html>`);
+            win.document.close();
+            win.focus();
+            setTimeout(function () { win.print(); }, 500);
+        }
+
+        /* Alias lama agar tidak breaking */
+        function bukaModalSP1() { bukaModal('modalSP1') }
+        function tutupModalSP1() { tutupModal('modalSP1') }
+        function cetakSuratSP1() { cetakSurat('isiSuratSP1') }
+    </script>
+
+</body>
+
+</html>

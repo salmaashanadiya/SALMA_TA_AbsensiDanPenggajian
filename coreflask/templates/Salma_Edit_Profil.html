@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue: #4f8cff;
+            --blue-dk: #2f5fd0;
+            --blue-soft: #eef4ff;
+            --sidebar-w: 248px;
+            --header-h: 64px;
+            --radius: 14px;
+            --text: #1a1d23;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --card: #fff;
+            --bg: #f5f7fb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: white;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100
+        }
+
+        .sidebar-logo {
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .logo-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: white
+        }
+
+        .sidebar-logo span {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .sidebar-user {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--blue-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--blue-dk);
+            margin-bottom: 8px;
+            overflow: hidden
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .sidebar-user p {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .sidebar-user span {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        nav {
+            padding: 12px;
+            flex: 1
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .8px;
+            color: var(--muted);
+            text-transform: uppercase;
+            padding: 8px 8px 4px
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
+            transition: .15s;
+            margin-bottom: 2px
+        }
+
+        .nav-item:hover {
+            background: var(--blue-soft);
+            color: var(--blue-dk)
+        }
+
+        .nav-item.active {
+            background: var(--blue-soft);
+            color: var(--blue);
+            font-weight: 600
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0
+        }
+
+        .sidebar-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border)
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: #e53935;
+            font-size: 13px;
+            font-weight: 500;
+            transition: .15s;
+            width: 100%
+        }
+
+        .logout-btn:hover {
+            background: #fff5f5
+        }
+
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column
+        }
+
+        .topbar {
+            height: var(--header-h);
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 28px;
+            gap: 10px
+        }
+
+        .topbar a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 13px
+        }
+
+        .topbar a:hover {
+            color: var(--blue)
+        }
+
+        .topbar-sep {
+            color: var(--border);
+            font-size: 13px
+        }
+
+        .topbar-current {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .content {
+            padding: 28px;
+            max-width: 700px
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 24px;
+            margin-bottom: 20px
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px
+        }
+
+        .card-sub {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 20px
+        }
+
+        .form-group {
+            margin-bottom: 18px
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: .4px
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--text);
+            background: white;
+            outline: none;
+            transition: .15s
+        }
+
+        .form-group input:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(79, 140, 255, .1)
+        }
+
+        .form-group input[readonly] {
+            background: var(--bg);
+            color: var(--muted);
+            cursor: not-allowed
+        }
+
+        .form-hint {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 5px
+        }
+
+        /* ── AVATAR UPLOAD ── */
+        .avatar-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .avatar-wrap {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            flex-shrink: 0
+        }
+
+        .avatar-big {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--blue-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--blue-dk);
+            border: 3px solid var(--blue);
+            overflow: hidden;
+            transition: .2s
+        }
+
+        .avatar-big img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        /* tombol kamera di pojok avatar */
+        .avatar-edit-btn {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--blue);
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: .15s;
+            z-index: 2
+        }
+
+        .avatar-edit-btn:hover {
+            background: var(--blue-dk);
+            transform: scale(1.1)
+        }
+
+        .avatar-edit-btn svg {
+            width: 13px;
+            height: 13px;
+            fill: white
+        }
+
+        /* overlay gelap saat hover di avatar */
+        .avatar-overlay {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: .2s;
+            z-index: 1
+        }
+
+        .avatar-wrap:hover .avatar-overlay {
+            background: rgba(0, 0, 0, .3)
+        }
+
+        .avatar-overlay span {
+            font-size: 11px;
+            color: white;
+            font-weight: 600;
+            opacity: 0;
+            transition: .2s;
+            text-align: center;
+            line-height: 1.3
+        }
+
+        .avatar-wrap:hover .avatar-overlay span {
+            opacity: 1
+        }
+
+        /* input file tersembunyi */
+        #foto-input {
+            display: none
+        }
+
+        .avatar-info p {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 2px
+        }
+
+        .avatar-info span {
+            font-size: 12px;
+            color: var(--muted);
+            display: block;
+            margin-bottom: 10px
+        }
+
+        .avatar-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .btn-upload {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: var(--blue-soft);
+            color: var(--blue-dk);
+            border: 1px solid #bfdbfe;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: .15s
+        }
+
+        .btn-upload:hover {
+            background: #dbeafe
+        }
+
+        .btn-hapus-foto {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: #fff5f5;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: .15s
+        }
+
+        .btn-hapus-foto:hover {
+            background: #fee2e2
+        }
+
+        /* info file terpilih */
+        .foto-info {
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--muted);
+            display: none;
+            align-items: center;
+            gap: 6px
+        }
+
+        .foto-info.show {
+            display: flex
+        }
+
+        .foto-info .fnama {
+            color: var(--blue-dk);
+            font-weight: 600
+        }
+
+        /* BUTTONS */
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--blue);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: .15s;
+            text-decoration: none
+        }
+
+        .btn-primary:hover {
+            background: var(--blue-dk)
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: white;
+            color: var(--text);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: .15s;
+            text-decoration: none
+        }
+
+        .btn-outline:hover {
+            background: var(--bg)
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        @media(max-width:768px) {
+            .sidebar {
+                display: none
+            }
+
+            .main {
+                margin-left: 0
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+                </svg>
+            </div>
+            <span>SistemGaji</span>
+        </div>
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                {% if karyawan.foto_profil_salma %}
+                <img src="/static/foto_profil/{{ karyawan.foto_profil_salma }}" alt="foto">
+                {% else %}
+                {{ karyawan.nama_salma[:2]|upper }}
+                {% endif %}
+            </div>
+            <p>{{ karyawan.nama_salma }}</p>
+            <span>{{ karyawan.nama_jabatan_salma }}</span>
+        </div>
+        <nav>
+            <div class="nav-label">Menu</div>
+            <a href="{{ url_for('karyawan_dashboard') }}" class="nav-item"><span class="nav-icon">🏠</span>Dashboard</a>
+            <a href="{{ url_for('profil') }}" class="nav-item active"><span class="nav-icon">👤</span>Profil</a>
+            <a href="{{ url_for('karyawan_izin') }}" class="nav-item"><span class="nav-icon">📋</span>Pengajuan Izin</a>
+            <a href="{{ url_for('riwayat_gaji') }}" class="nav-item"><span class="nav-icon">💰</span>Riwayat Gaji</a>
+            <a href="{{ url_for('ganti_password') }}" class="nav-item"><span class="nav-icon">🔒</span>Ganti
+                Password</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="logout-btn"><span>🚪</span> Keluar</a>
+        </div>
+    </aside>
+
+    <div class="main">
+        <div class="topbar">
+            <a href="{{ url_for('karyawan_dashboard') }}">Dashboard</a>
+            <span class="topbar-sep">/</span>
+            <a href="{{ url_for('profil') }}">Profil</a>
+            <span class="topbar-sep">/</span>
+            <span class="topbar-current">Edit Profil</span>
+        </div>
+
+        <div class="content">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}{% for cat, msg in messages %}
+            <div class="alert-success">✅ {{ msg }}</div>
+            {% endfor %}{% endif %}
+            {% endwith %}
+
+            <div class="card">
+
+                <!-- AVATAR SECTION -->
+                <div class="avatar-section">
+                    <div class="avatar-wrap">
+                        <div class="avatar-big" id="avatar-preview">
+                            {% if karyawan.foto_profil_salma %}
+                            <img id="preview-img" src="/static/foto_profil/{{ karyawan.foto_profil_salma }}" alt="foto">
+                            {% else %}
+                            <span id="avatar-inisial">{{ karyawan.nama_salma[:2]|upper }}</span>
+                            <img id="preview-img" src="" alt="foto" style="display:none">
+                            {% endif %}
+                        </div>
+
+                        <!-- overlay hover -->
+                        <div class="avatar-overlay" onclick="document.getElementById('foto-input').click()">
+                            <span>Ganti<br>Foto</span>
+                        </div>
+
+                        <!-- tombol kamera pojok -->
+                        <div class="avatar-edit-btn" onclick="document.getElementById('foto-input').click()"
+                            title="Ganti foto profil">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4zm7-12H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V5.2A2 2 0 0 0 19 3.2zM12 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10z" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="avatar-info">
+                        <p>{{ karyawan.nama_salma }}</p>
+                        <span>{{ karyawan.nama_jabatan_salma }} · NIP {{ karyawan.nip_salma }}</span>
+                        <div class="avatar-actions">
+                            <button type="button" class="btn-upload"
+                                onclick="document.getElementById('foto-input').click()">
+                                📷 Pilih Foto
+                            </button>
+                            {% if karyawan.foto_profil_salma %}
+                            <button type="button" class="btn-hapus-foto" onclick="hapusFoto()">
+                                🗑 Hapus Foto
+                            </button>
+                            {% endif %}
+                        </div>
+                        <div class="foto-info" id="foto-info">
+                            <span>📎</span>
+                            <span class="fnama" id="foto-nama"></span>
+                            <span>· siap diupload</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-title">Edit Informasi Profil</div>
+                <div class="card-sub">Perbarui nama, email, dan foto kamu di bawah ini</div>
+
+                <form method="POST" action="{{ url_for('edit_profil') }}" enctype="multipart/form-data">
+
+                    <!-- input file tersembunyi -->
+                    <input type="file" id="foto-input" name="foto_profil" accept="image/jpeg,image/png,image/webp">
+                    <!-- flag hapus foto -->
+                    <input type="hidden" name="hapus_foto" id="hapus-foto-flag" value="0">
+
+                    <div class="form-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" name="nama" value="{{ karyawan.nama_salma }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" value="{{ karyawan.email_salma }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>NIP</label>
+                        <input type="text" value="{{ karyawan.nip_salma }}" readonly>
+                        <div class="form-hint">NIP tidak dapat diubah</div>
+                    </div>
+
+                    <div style="height:1px;background:var(--border);margin:20px 0"></div>
+                    <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">💳 Informasi
+                        Rekening Bank</div>
+                    <div style="font-size:12px;color:var(--muted);margin-bottom:16px">Digunakan untuk transfer gaji
+                        bulanan</div>
+
+                    <div class="form-group">
+                        <label>Nama Bank</label>
+                        <input type="text" name="nama_bank" value="{{ karyawan.nama_bank_salma or '' }}"
+                            placeholder="contoh: BCA, BRI, Mandiri">
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor Rekening</label>
+                        <input type="text" name="no_rekening" value="{{ karyawan.no_rekening_salma or '' }}"
+                            placeholder="contoh: 1234567890">
+                    </div>
+                    <div class="form-group">
+                        <label>Atas Nama</label>
+                        <input type="text" name="atas_nama" value="{{ karyawan.atas_nama_salma or '' }}"
+                            placeholder="Nama sesuai rekening">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Jabatan</label>
+                        <input type="text" value="{{ karyawan.nama_jabatan_salma }}" readonly>
+                        <div class="form-hint">Jabatan hanya dapat diubah oleh admin</div>
+                    </div>
+
+                    <div class="btn-row">
+                        <button type="submit" class="btn-primary">💾 Simpan Perubahan</button>
+                        <a href="{{ url_for('profil') }}" class="btn-outline">Batal</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fotoInput = document.getElementById('foto-input');
+        const previewImg = document.getElementById('preview-img');
+        const inisial = document.getElementById('avatar-inisial');
+        const fotoInfo = document.getElementById('foto-info');
+        const fotoNama = document.getElementById('foto-nama');
+        const hapusFlag = document.getElementById('hapus-foto-flag');
+
+        fotoInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (!file) return;
+
+            // validasi ukuran maks 3MB
+            if (file.size > 3 * 1024 * 1024) {
+                alert('Ukuran foto maksimal 3MB.');
+                this.value = '';
+                return;
+            }
+
+            // preview langsung
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+                if (inisial) inisial.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+
+            // tampilkan nama file
+            fotoNama.textContent = file.name;
+            fotoInfo.classList.add('show');
+            hapusFlag.value = '0';
+        });
+
+        function hapusFoto() {
+            if (!confirm('Hapus foto profil? Akan kembali ke inisial nama.')) return;
+            // reset preview ke inisial
+            previewImg.src = '';
+            previewImg.style.display = 'none';
+            if (inisial) inisial.style.display = '';
+            // reset input file
+            fotoInput.value = '';
+            fotoInfo.classList.remove('show');
+            // tandai hapus
+            hapusFlag.value = '1';
+        }
+    </script>
+
+</body>
+
+</html>

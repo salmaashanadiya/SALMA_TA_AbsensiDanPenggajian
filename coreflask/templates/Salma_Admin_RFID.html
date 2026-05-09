@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola RFID Absensi — SistemGaji</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue: #4f8cff;
+            --blue-dk: #2f5fd0;
+            --blue-soft: #eef4ff;
+            --sidebar-w: 248px;
+            --header-h: 64px;
+            --radius: 14px;
+            --text: #1a1d23;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --card: #ffffff;
+            --bg: #f5f7fb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: white;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: white
+        }
+
+        .sidebar-logo span {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        nav {
+            padding: 12px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .8px;
+            color: var(--muted);
+            text-transform: uppercase;
+            padding: 8px 8px 4px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
+            transition: .15s;
+            margin-bottom: 2px;
+        }
+
+        .nav-item:hover {
+            background: var(--blue-soft);
+            color: var(--blue-dk)
+        }
+
+        .nav-item.active {
+            background: var(--blue-soft);
+            color: var(--blue);
+            font-weight: 600
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .notif-badge {
+            background: #ef4444;
+            color: white;
+            border-radius: 9999px;
+            padding: 1px 7px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-left: auto;
+        }
+
+        .sidebar-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: #e53935;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: #fff5f5
+        }
+
+        /* MAIN */
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            height: var(--header-h);
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar-left h2 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .topbar-left p {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .date-chip {
+            background: var(--blue-soft);
+            color: var(--blue-dk);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .content {
+            padding: 24px 28px;
+            flex: 1
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .card-sub {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .full {
+            margin-bottom: 16px;
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            font-size: 13px;
+            padding: 11px 12px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none
+        }
+
+        tr:hover td {
+            background: var(--bg)
+        }
+
+        /* BADGE */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-masuk {
+            background: #dcfce7;
+            color: #166534
+        }
+
+        .badge-pulang {
+            background: #dbeafe;
+            color: #1e40af
+        }
+
+        .badge-belum {
+            background: #fee2e2;
+            color: #991b1b
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%
+        }
+
+        .dot-green {
+            background: #22c55e
+        }
+
+        .dot-blue {
+            background: #3b82f6
+        }
+
+        .dot-red {
+            background: #ef4444
+        }
+
+        /* AVATAR */
+        .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--blue-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--blue-dk);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* BUTTONS */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--blue);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 9px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .15s;
+            font-family: inherit;
+        }
+
+        .btn-primary:hover {
+            background: var(--blue-dk)
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: white;
+            color: var(--text);
+            padding: 8px 14px;
+            border-radius: 9px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .15s;
+            font-family: inherit;
+        }
+
+        .btn-outline:hover {
+            background: var(--bg)
+        }
+
+        .btn-danger {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 6px 10px;
+            border-radius: 7px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .15s;
+        }
+
+        .btn-danger:hover {
+            background: #fecaca
+        }
+
+        /* FORM */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-control {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--blue);
+            background: white;
+        }
+
+        /* FLASH */
+        .flash {
+            padding: 10px 16px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .flash-success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .flash-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* RFID CHIP VISUAL */
+        .rfid-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 4px 10px;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+
+        .rfid-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        /* EMPTY */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+        }
+
+        .empty-state .icon {
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 13px;
+        }
+
+        /* LIVE PULSE */
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: .5;
+                transform: scale(1.5)
+            }
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            display: inline-block;
+            animation: pulse 1.8s ease-in-out infinite;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        @media(max-width:900px) {
+            .two-col {
+                grid-template-columns: 1fr
+            }
+
+            .form-row {
+                grid-template-columns: 1fr
+            }
+        }
+
+        @media(max-width:768px) {
+            .sidebar {
+                display: none
+            }
+
+            .main {
+                margin-left: 0
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+                </svg>
+            </div>
+            <span>SistemGaji</span>
+        </div>
+        <nav>
+            <div class="nav-label">Menu Admin</div>
+            <a href="{{ url_for('admin_dashboard') }}" class="nav-item"><span class="nav-icon">🏠</span>Dashboard</a>
+            <a href="{{ url_for('admin_absensi') }}" class="nav-item"><span class="nav-icon">📅</span>Absensi</a>
+            <a href="{{ url_for('admin_izin') }}" class="nav-item">
+                <span class="nav-icon">📋</span>Izin
+                {% if notif_izin > 0 %}<span class="notif-badge">{{ notif_izin }}</span>{% endif %}
+            </a>
+            <a href="{{ url_for('admin_jabatan') }}" class="nav-item"><span class="nav-icon">🏷️</span>Jabatan</a>
+            <a href="{{ url_for('admin_pembayaran') }}" class="nav-item">
+                <span class="nav-icon">💰</span>Pembayaran
+                {% if notif_gaji > 0 %}<span class="notif-badge">{{ notif_gaji }}</span>{% endif %}
+            </a>
+            <a href="{{ url_for('admin_laporan') }}" class="nav-item"><span class="nav-icon">📊</span>Laporan</a>
+            <a href="{{ url_for('admin_rfid') }}" class="nav-item active"><span class="nav-icon">📡</span>Kartu RFID</a>
+            <a href="{{ url_for('admin_hari_libur') }}" class="nav-item"><span class="nav-icon">🗓️</span>Hari Libur</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="logout-btn"><span>🚪</span> Keluar</a>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <h2>📡 Kelola Kartu RFID Absensi</h2>
+                <p>Daftarkan & kelola kartu RFID untuk absen masuk dan pulang karyawan</p>
+            </div>
+            <span class="date-chip">{{ tanggal_str }}</span>
+        </div>
+
+        <div class="content">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for cat, msg in messages %}
+            <div class="flash flash-{{ cat }}">{{ msg }}</div>
+            {% endfor %}
+            {% endwith %}
+
+            <!-- FORM DAFTAR KARTU -->
+            <div class="card full">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">🔑 Daftarkan Kartu RFID</div>
+                        <div class="card-sub">Hubungkan ID kartu ke akun karyawan. Jika karyawan sudah punya kartu,
+                            kartu lama akan diganti.</div>
+                    </div>
+                </div>
+                <form action="{{ url_for('admin_rfid_daftar') }}" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">ID Kartu RFID *</label>
+                            <input name="id_kartu" class="form-control" placeholder="cth: A1B2C3D4" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Karyawan *</label>
+                            <select name="id_user" class="form-control" required>
+                                <option value="">— Pilih Karyawan —</option>
+                                {% for k in semua_karyawan %}
+                                <option value="{{ k.id_user_salma }}">{{ k.nama_salma }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Keterangan <span
+                                    style="color:var(--muted);font-weight:400">(opsional)</span></label>
+                            <input name="keterangan" class="form-control" placeholder="cth: kartu utama">
+                        </div>
+                        <button type="submit" class="btn-primary">➕ Daftarkan</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="two-col">
+
+                <!-- DAFTAR KARTU -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">📋 Kartu Terdaftar</div>
+                            <div class="card-sub">{{ kartu_list|length }} kartu aktif</div>
+                        </div>
+                    </div>
+
+                    {% if kartu_list %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kartu</th>
+                                <th>Karyawan</th>
+                                <th>Jabatan</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for k in kartu_list %}
+                            <tr>
+                                <td>
+                                    <span class="rfid-chip"><span class="rfid-dot"></span>{{ k.id_kartu }}</span>
+                                    {% if k.keterangan %}
+                                    <div style="font-size:11px;color:var(--muted);margin-top:3px">{{ k.keterangan }}
+                                    </div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="avatar">
+                                            {% if k.foto_profil_salma %}
+                                            <img src="/static/foto_profil/{{ k.foto_profil_salma }}" alt="">
+                                            {% else %}{{ k.nama_salma[:2]|upper }}{% endif %}
+                                        </div>
+                                        <span style="font-weight:600">{{ k.nama_salma }}</span>
+                                    </div>
+                                </td>
+                                <td style="font-size:12px;color:var(--muted)">{{ k.nama_jabatan_salma or '—' }}</td>
+                                <td>
+                                    <a href="{{ url_for('admin_rfid_hapus', id_kartu=k.id_kartu) }}" class="btn-danger"
+                                        onclick="return confirm('Hapus kartu {{ k.id_kartu }} milik {{ k.nama_salma }}?')">🗑️</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="icon">🔑</div>
+                        <p>Belum ada kartu RFID terdaftar.</p>
+                    </div>
+                    {% endif %}
+
+                    {% if karyawan_belum_kartu %}
+                    <div
+                        style="margin-top:14px;padding:12px 14px;background:#fef9c3;border-radius:9px;border:1px solid #fde68a">
+                        <div style="font-size:12px;font-weight:600;color:#92400e;margin-bottom:5px">⚠️ Belum punya kartu
+                            RFID:</div>
+                        {% for k in karyawan_belum_kartu %}
+                        <div style="font-size:12px;color:#92400e">• {{ k.nama_salma }}{% if k.nama_jabatan_salma %} — {{
+                            k.nama_jabatan_salma }}{% endif %}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- LOG ABSENSI HARI INI -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Log Absensi RFID Hari Ini <span class="live-dot"></span></div>
+                            <div class="card-sub">Karyawan dengan kartu RFID</div>
+                        </div>
+                        <button onclick="location.reload()" class="btn-outline" style="padding:6px 10px">🔄</button>
+                    </div>
+
+                    {% if log_hari_ini %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Karyawan</th>
+                                <th>Masuk</th>
+                                <th>Pulang</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for a in log_hari_ini %}
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="avatar">
+                                            {% if a.foto_profil_salma %}<img
+                                                src="/static/foto_profil/{{ a.foto_profil_salma }}" alt="">
+                                            {% else %}{{ a.nama_salma[:2]|upper }}{% endif %}
+                                        </div>
+                                        <div>
+                                            <div style="font-weight:600;font-size:13px">{{ a.nama_salma }}</div>
+                                            <div style="font-size:11px;color:var(--muted)">{{ a.nama_jabatan_salma or
+                                                '—' }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="font-weight:600">{{ (a.jam_masuk_salma|string)[:5] if a.jam_masuk_salma else
+                                    '—' }}</td>
+                                <td style="font-weight:600">{{ (a.jam_pulang_salma|string)[:5] if a.jam_pulang_salma
+                                    else '—' }}</td>
+                                <td>
+                                    {% if a.jam_pulang_salma %}
+                                    <span class="badge badge-pulang"><span class="dot dot-blue"></span> Lengkap</span>
+                                    {% elif a.jam_masuk_salma %}
+                                    <span class="badge badge-masuk"><span class="dot dot-green"></span> Hadir</span>
+                                    {% else %}
+                                    <span class="badge badge-belum"><span class="dot dot-red"></span> Belum</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="icon">📭</div>
+                        <p>Belum ada absensi RFID hari ini.</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+    <script>
+        const inputRFID = document.querySelector('input[name="id_kartu"]');
+
+        // auto focus ke input pas halaman kebuka
+        window.onload = () => {
+            inputRFID.focus();
+        };
+
+        // kalau scan selesai (biasanya diakhiri ENTER)
+        inputRFID.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+
+                // optional: langsung submit form
+                this.form.submit();
+            }
+        });
+    </script>
+</body>
+
+</html>
